@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.filemanager.screens.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_filesByTypeFragment"
+            app:destination="@id/filesByTypeFragment" />
+        <argument
+            android:name="path"
+            app:argType="string"
+            android:defaultValue="DEFAULT_PATH" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_folders"
+        android:name="com.example.filemanager.screens.FoldersFragment"
+        android:label="@string/menu_folders"
+        tools:layout="@layout/fragment_folders" >
+        <action
+            android:id="@+id/action_nav_folders_self"
+            app:destination="@id/nav_folders" />
+        <argument
+            android:name="path"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="DEFAULT_VALUE"/>
+
+    </fragment>
+    <fragment
+        android:id="@+id/filesByTypeFragment"
+        android:name="com.example.filemanager.screens.FilesByTypeFragment"
+        android:label="fragment_files_by_type"
+        tools:layout="@layout/fragment_files_by_type" >
+        <argument
+            android:name="filesGroup"
+            app:argType="com.example.domain.entity.FileGroup" />
+    </fragment>
+
+
+</navigation>
