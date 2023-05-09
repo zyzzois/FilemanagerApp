@@ -106,6 +106,5 @@ class HomeFragment : Fragment() {
 
     companion object {
         private const val BINDING_EXCEPTION_MESSAGE = "HomeFragmentBinding = null"
-        fun newInstance() = HomeFragment()
     }
 }

@@ -52,9 +52,8 @@ class FoldersViewModel @Inject constructor(
     fun isAccessibleFolder(path: String) = path != INACCESSIBLE_FOLDER
 
     companion object {
-        private val dp = System.getenv("EXTERNAL_STORAGE")
-        private val defaultPath = File(dp as String).path
-        private val INACCESSIBLE_FOLDER = "$defaultPath/Android"
+
+        private val INACCESSIBLE_FOLDER = "${Environment.getExternalStorageDirectory().path}/Android"
         private const val DEFAULT_VALUE = "DEFAULT_VALUE"
     }
 }

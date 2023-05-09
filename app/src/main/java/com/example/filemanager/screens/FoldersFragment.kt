@@ -3,33 +3,28 @@ package com.example.filemanager.screens
 import android.content.Context
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.filemanager.R
 import com.example.filemanager.app.FileManagerApp
-import com.example.filemanager.recycler.FileListAdapter
 import com.example.filemanager.databinding.FragmentFoldersBinding
+import com.example.filemanager.recycler.FileListAdapter
 import com.example.filemanager.utils.FileOpener
 import com.example.filemanager.vm.FoldersViewModel
 import com.example.filemanager.vm.ViewModelFactory
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 class FoldersFragment : Fragment() {
 
     private val args by navArgs<FoldersFragmentArgs>()
 
-    private val component by lazy {
-        (requireActivity().application as FileManagerApp).component
-    }
+    private val component by lazy { (requireActivity().application as FileManagerApp).component }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -42,9 +37,7 @@ class FoldersFragment : Fragment() {
     private val binding: FragmentFoldersBinding
         get() = _binding ?: throw RuntimeException(BINDING_EXCEPTION_MESSAGE)
 
-
     private lateinit var foldersAdapter: FileListAdapter
-
 
     override fun onAttach(context: Context) {
         component.inject(this)
@@ -82,7 +75,6 @@ class FoldersFragment : Fragment() {
             }
             updateList(args.path)
             folderList.observe(viewLifecycleOwner) {
-                Log.d("ZOIS", it.toString())
                 foldersAdapter.submitList(it)
             }
         }
@@ -98,8 +90,7 @@ class FoldersFragment : Fragment() {
                     )
                     viewModel.setPath(path)
                 } else {
-                    Toast.makeText(requireContext(), "Содержимое этой папки " +
-                            "не может быть отображено из-за ограничений Android", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), ERROR_MSG, Toast.LENGTH_LONG).show()
                 }
             }
             else {
@@ -116,8 +107,8 @@ class FoldersFragment : Fragment() {
 
 
     companion object {
-        private val DEFAULT_PATH = Environment.getExternalStorageDirectory().path
+        private const val ERROR_MSG = "Содержимое этой папки " +
+                "не может быть отображено из-за ограничений Android"
         private const val BINDING_EXCEPTION_MESSAGE = "FragmentFoldersBinding = null"
-        private val BLACK_LIST = listOf(DEFAULT_PATH + "Android")
     }
 }

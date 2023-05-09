@@ -15,6 +15,14 @@ class FileToEntityMapper @Inject constructor() {
         file = file
     )
 
+    fun mapFolderEntityToFolder(folderEntityList: List<FileEntity>): ArrayList<File> {
+        val res = ArrayList<File>()
+        folderEntityList.forEach {
+            res.add(mapFileEntityToFile(it))
+        }
+        return res
+    }
 
+    private fun mapFileEntityToFile(fileEntity: FileEntity) = File(fileEntity.file.path)
 
 }
