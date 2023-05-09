@@ -9,12 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.domain.entity.FileGroup
-import com.example.domain.entity.FileType
 import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.recycler.FileListAdapter
 import com.example.filemanager.databinding.FragmentHomeBinding
-import com.example.filemanager.vm.FoldersViewModel
-import com.example.filemanager.vm.HomeViewModel
 import com.example.filemanager.vm.ViewModelFactory
 import javax.inject.Inject
 
@@ -26,12 +23,6 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModel by lazy {
-        ViewModelProvider(requireActivity(), viewModelFactory)[HomeViewModel::class.java]
-    }
-
-    private lateinit var homeFragmentAdapter: FileListAdapter
 
     private var _binding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding

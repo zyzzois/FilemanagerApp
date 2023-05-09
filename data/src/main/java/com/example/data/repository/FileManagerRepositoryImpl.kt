@@ -1,13 +1,13 @@
 package com.example.data.repository
 
-import android.os.Build
 import android.os.Environment
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.example.data.mapper.FileToEntityMapper
 import com.example.domain.entity.FileEntity
 import com.example.domain.entity.FileGroup
 import com.example.domain.repository.FileManagerRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -15,27 +15,42 @@ class FileManagerRepositoryImpl @Inject constructor(
     private val mapper: FileToEntityMapper
 ): FileManagerRepository {
 
-
     override suspend fun getFolderList(path: String): List<FileEntity> {
-        val rootDir = Environment.getExternalStorageDirectory()
-        val list = ArrayList<File>()
-        if (path == rootDir.path) {
-            val files = rootDir.listFiles()
-            for (singleFile in files!!)
-                list.add(singleFile)
-            return list.map {
-                mapper.mapFolderToFolderEntity(it)
+        return withContext(Dispatchers.IO) {
+
+            val rootDir = Environment.getExternalStorageDirectory()
+            val rootDirPath = rootDir.path
+            val list = ArrayList<File>()
+            val resultList = ArrayList<FileEntity>()
+            var actualPath = path
+
+            if (path == DEFAULT_VALUE)
+                actualPath = rootDirPath
+
+
+            if (actualPath == rootDirPath) {
+                val files = rootDir.listFiles()
+
+                for (singleFile in files!!)
+                    list.add(singleFile)
+
+                list.forEach {
+                    resultList.add(mapper.mapFolderToFolderEntity(it))
+                }
+                resultList
             }
-        } else {
-            val files = File(path).listFiles()
-            for (singleFile in files!!)
-                list.add(singleFile)
-            return list.map {
-                mapper.mapFolderToFolderEntity(it)
+            else {
+                val files = File(path).listFiles()
+
+                for (singleFile in files!!)
+                    list.add(singleFile)
+
+                list.forEach {
+                    resultList.add(mapper.mapFolderToFolderEntity(it))
+                }
+                resultList
             }
         }
-
-
     }
 
 
@@ -70,7 +85,6 @@ class FileManagerRepositoryImpl @Inject constructor(
             else -> {
                 paths.add(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS).path)
-                Log.d("ZYZZ", "true")
             }
         }
         val fileList = ArrayList<File>()
@@ -92,7 +106,9 @@ class FileManagerRepositoryImpl @Inject constructor(
     override fun deleteFile(file: FileEntity) { TODO("Not yet implemented") }
 
 
+
     companion object {
+        private const val DEFAULT_VALUE = "DEFAULT_VALUE"
         internal val extension = listOf(
             ".jpeg",
             ".jpg",

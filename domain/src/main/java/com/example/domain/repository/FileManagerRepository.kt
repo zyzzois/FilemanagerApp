@@ -10,4 +10,5 @@ interface FileManagerRepository {
     fun shareFile(file: FileEntity)
     fun editFile(file: FileEntity)
     fun deleteFile(file: FileEntity)
+
 }

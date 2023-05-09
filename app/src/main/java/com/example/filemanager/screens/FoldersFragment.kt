@@ -84,17 +84,13 @@ class FoldersFragment : Fragment() {
         foldersAdapter.onFileItemClickListener = {
             if (it.file.isDirectory) {
                 val path = it.file.absolutePath
-                if (viewModel.isAccessibleFolder(path)) {
-                    findNavController().navigate(
-                        FoldersFragmentDirections.actionNavFoldersSelf().setPath(path)
-                    )
-                    viewModel.setPath(path)
-                } else {
-                    Toast.makeText(requireContext(), ERROR_MSG, Toast.LENGTH_LONG).show()
-                }
+                findNavController().navigate(
+                    FoldersFragmentDirections.actionNavFoldersSelf().setPath(path)
+                )
+                viewModel.setPath(path)
             }
             else {
-                FileOpener().openFile(requireContext(), it.file)
+                //FileOpener().openFile(requireContext(), it.file)
             }
         }
     }
@@ -104,8 +100,6 @@ class FoldersFragment : Fragment() {
 
         }
     }
-
-
     companion object {
         private const val ERROR_MSG = "Содержимое этой папки " +
                 "не может быть отображено из-за ограничений Android"
