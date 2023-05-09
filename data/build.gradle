@@ -35,6 +35,10 @@ dependencies {
 
     implementation project(path: ':domain')
 
+    // VK SDK
+    implementation 'com.vk:android-sdk-core:4.0.1'
+    implementation 'com.vk:android-sdk-api:4.0.1'
+
     implementation 'androidx.appcompat:appcompat:1.6.1'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

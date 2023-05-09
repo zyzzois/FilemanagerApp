@@ -1,4 +1,4 @@
-package com.example.filemanager.recycler
+package com.example.filemanager.ui.recycler
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.filemanager.databinding.FileListItemBinding

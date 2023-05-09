@@ -1,8 +1,8 @@
 package com.example.filemanager.di
 
 import androidx.lifecycle.ViewModel
-import com.example.filemanager.vm.FilesByTypeViewModel
-import com.example.filemanager.vm.FoldersViewModel
+import com.example.filemanager.ui.vm.FilesByTypeViewModel
+import com.example.filemanager.ui.vm.FoldersViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

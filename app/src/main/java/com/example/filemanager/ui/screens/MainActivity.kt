@@ -1,8 +1,9 @@
-package com.example.filemanager.screens
+package com.example.filemanager.ui.screens
 
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -13,6 +14,9 @@ import com.example.filemanager.R
 import com.example.filemanager.databinding.ActivityMainBinding
 import com.example.filemanager.utils.isStoragePermissionGranted
 import com.example.filemanager.utils.showStoragePermissionDialog
+import com.vk.api.sdk.VK
+import com.vk.api.sdk.auth.VKAuthenticationResult
+import com.vk.api.sdk.auth.VKScope
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,9 +27,17 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
+    private val authLauncher = VK.login(this as ComponentActivity) { result : VKAuthenticationResult ->
+        when (result) {
+            is VKAuthenticationResult.Success -> {}
+            is VKAuthenticationResult.Failed -> { }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        authViaVK()
         setSupportActionBar(binding.appBarMain.toolbar)
         requestStoragePermission()
 
@@ -34,11 +46,15 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_home, R.id.nav_folders), drawerLayout
+            setOf(R.id.nav_home, R.id.nav_folders, R.id.nav_vkid), drawerLayout
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
 
+    private fun authViaVK() {
+        authLauncher.launch(arrayListOf(VKScope.DOCS))
     }
 
     override fun onRequestPermissionsResult(
@@ -66,6 +82,8 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+
 
 
 

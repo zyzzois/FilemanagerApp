@@ -1,22 +1,21 @@
-package com.example.filemanager.screens
+package com.example.filemanager.ui.screens
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.databinding.FragmentFilesByTypeBinding
-import com.example.filemanager.recycler.FileListAdapter
+import com.example.filemanager.ui.recycler.FileListAdapter
+import com.example.filemanager.ui.vm.FilesByTypeViewModel
+import com.example.filemanager.ui.vm.ViewModelFactory
 import com.example.filemanager.utils.FileOpener
-import com.example.filemanager.vm.FilesByTypeViewModel
-import com.example.filemanager.vm.ViewModelFactory
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 class FilesByTypeFragment : Fragment() {
@@ -85,7 +84,6 @@ class FilesByTypeFragment : Fragment() {
     private fun showFileList() {
         with(viewModel) {
             showFoldersInFileGroup(args.filesGroup)
-
             fileList.observe(viewLifecycleOwner) {
                 filesByTypeAdapter.submitList(it)
             }

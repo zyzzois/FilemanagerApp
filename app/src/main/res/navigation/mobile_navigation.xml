@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.filemanager.screens.HomeFragment"
+        android:name="com.example.filemanager.ui.screens.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/nav_folders"
-        android:name="com.example.filemanager.screens.FoldersFragment"
+        android:name="com.example.filemanager.ui.screens.FoldersFragment"
         android:label="@string/menu_folders"
         tools:layout="@layout/fragment_folders" >
         <action
@@ -35,7 +35,7 @@
     </fragment>
     <fragment
         android:id="@+id/filesByTypeFragment"
-        android:name="com.example.filemanager.screens.FilesByTypeFragment"
+        android:name="com.example.filemanager.ui.screens.FilesByTypeFragment"
         android:label="fragment_files_by_type"
         tools:layout="@layout/fragment_files_by_type" >
         <argument
@@ -50,6 +50,12 @@
             app:nullable="true"
             android:defaultValue="DEFAULT_PATH" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_vkid"
+        android:name="com.example.filemanager.ui.screens.AuthorizationFragment"
+        android:label="VK ID"
+        tools:layout="@layout/fragment_authorization" />
 
 
 </navigation>

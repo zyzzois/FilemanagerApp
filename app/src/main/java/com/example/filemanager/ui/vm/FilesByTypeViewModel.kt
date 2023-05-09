@@ -1,4 +1,4 @@
-package com.example.filemanager.vm
+package com.example.filemanager.ui.vm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

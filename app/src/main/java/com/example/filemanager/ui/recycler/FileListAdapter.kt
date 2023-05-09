@@ -1,16 +1,14 @@
-package com.example.filemanager.recycler
+package com.example.filemanager.ui.recycler
 
 import android.content.Context
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.entity.FileEntity
 import com.example.domain.entity.FileType
 import com.example.filemanager.R
 import com.example.filemanager.databinding.FileListItemBinding
-import com.example.filemanager.utils.folderLength
 
 
 class FileListAdapter(private val context: Context): ListAdapter<FileEntity, FileItemViewHolder>(

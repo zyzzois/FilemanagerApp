@@ -1,12 +1,10 @@
-package com.example.filemanager.screens
+package com.example.filemanager.ui.screens
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -14,10 +12,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.databinding.FragmentFoldersBinding
-import com.example.filemanager.recycler.FileListAdapter
+import com.example.filemanager.ui.recycler.FileListAdapter
 import com.example.filemanager.utils.FileOpener
-import com.example.filemanager.vm.FoldersViewModel
-import com.example.filemanager.vm.ViewModelFactory
+import com.example.filemanager.ui.vm.FoldersViewModel
+import com.example.filemanager.ui.vm.ViewModelFactory
 import javax.inject.Inject
 
 class FoldersFragment : Fragment() {
@@ -89,9 +87,8 @@ class FoldersFragment : Fragment() {
                 )
                 viewModel.setPath(path)
             }
-            else {
-                //FileOpener().openFile(requireContext(), it.file)
-            }
+            else FileOpener().openFile(requireContext(), it.file)
+
         }
     }
 
@@ -100,6 +97,12 @@ class FoldersFragment : Fragment() {
 
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     companion object {
         private const val ERROR_MSG = "Содержимое этой папки " +
                 "не может быть отображено из-за ограничений Android"

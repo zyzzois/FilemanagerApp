@@ -1,4 +1,4 @@
-package com.example.filemanager.recycler
+package com.example.filemanager.ui.recycler
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.domain.entity.FileEntity
