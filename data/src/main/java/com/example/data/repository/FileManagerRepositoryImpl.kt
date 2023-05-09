@@ -17,7 +17,6 @@ class FileManagerRepositoryImpl @Inject constructor(
 
     override suspend fun getFolderList(path: String): List<FileEntity> {
         return withContext(Dispatchers.IO) {
-
             val rootDir = Environment.getExternalStorageDirectory()
             val rootDirPath = rootDir.path
             val list = ArrayList<File>()
@@ -27,21 +26,18 @@ class FileManagerRepositoryImpl @Inject constructor(
             if (path == DEFAULT_VALUE)
                 actualPath = rootDirPath
 
-
             if (actualPath == rootDirPath) {
                 val files = rootDir.listFiles()
-
                 for (singleFile in files!!)
                     list.add(singleFile)
-
                 list.forEach {
                     resultList.add(mapper.mapFolderToFolderEntity(it))
                 }
                 resultList
             }
+
             else {
                 val files = File(path).listFiles()
-
                 for (singleFile in files!!)
                     list.add(singleFile)
 

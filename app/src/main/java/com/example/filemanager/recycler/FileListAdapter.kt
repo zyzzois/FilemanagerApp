@@ -44,7 +44,7 @@ class FileListAdapter(private val context: Context): ListAdapter<FileEntity, Fil
             when (fileItem.fileType) {
                 is FileType.FOLDER -> {
                     imageFileIcon.setImageResource(R.drawable.ic_folder)
-                    tvTimesTamp.text = "${} Files"
+
                 }
                 is FileType.PDF -> {
                     tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
