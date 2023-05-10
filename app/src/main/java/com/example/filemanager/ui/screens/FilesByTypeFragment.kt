@@ -64,7 +64,6 @@ class FilesByTypeFragment : Fragment() {
     private fun setupClickListener() {
         filesByTypeAdapter.onFileItemClickListener = {
             if (it.file.isDirectory) {
-                Log.d("ANUBIS2", args.filesGroup.toString())
                 findNavController().navigate(
                     FilesByTypeFragmentDirections.actionFilesByTypeFragmentSelf(
                         args.filesGroup
@@ -85,7 +84,6 @@ class FilesByTypeFragment : Fragment() {
     }
 
     private fun showFileList() {
-        Log.d("ANUBIS2", args.filesGroup.toString())
         with(viewModel) {
             showFilesInSelectedGroup(args.filesGroup)
             fileList.observe(viewLifecycleOwner) {
