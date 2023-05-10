@@ -33,6 +33,9 @@ class FoldersViewModel @Inject constructor(
 
     fun deleteFile(file: FileEntity) {
         deleteFileUseCase(file)
+        _folderList.value = folderList.value?.filterNot {
+            it == file
+        }
     }
 
     fun setPath(path: String) {

@@ -42,9 +42,14 @@ class FileListAdapter(private val context: Context): ListAdapter<FileEntity, Fil
             when (fileItem.fileType) {
                 is FileType.FOLDER -> {
                     imageFileIcon.setImageResource(R.drawable.ic_folder)
+                    tvTimesTamp.text = "${fileItem.numOfFilesInFolder} Files"
 
                 }
                 is FileType.PDF -> {
+                    tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
+                    imageFileIcon.setImageResource(R.drawable.ic_pdf)
+                }
+                is FileType.DOC -> {
                     tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
                     imageFileIcon.setImageResource(R.drawable.ic_pdf)
                 }
@@ -72,12 +77,15 @@ class FileListAdapter(private val context: Context): ListAdapter<FileEntity, Fil
                     tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
                     imageFileIcon.setImageResource(R.drawable.ic_zip)
                 }
-                else -> {
 
+                else -> {
+                    imageFileIcon.setImageResource(R.drawable.ic_folder)
                 }
             }
             tvFileName.text = fileItem.filename
         }
     }
+
+
 
 }

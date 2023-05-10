@@ -27,6 +27,9 @@ fun File.extensionType(): FileType {
         return FileType.DOC
     else if (this.extensionIs(FileManagerRepositoryImpl.extension[8]))
         return FileType.APK
+    else if (this.extensionIs(FileManagerRepositoryImpl.extension[9]))
+        return FileType.ZIP
 
     return FileType.FOLDER
 }
+

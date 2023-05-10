@@ -3,8 +3,10 @@ package com.example.data.repository
 import android.os.Environment
 import android.util.Log
 import com.example.data.mapper.FileToEntityMapper
+import com.example.data.utils.extensionType
 import com.example.domain.entity.FileEntity
 import com.example.domain.entity.FileGroup
+import com.example.domain.entity.FileType
 import com.example.domain.repository.FileManagerRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -50,46 +52,73 @@ class FileManagerRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getFileListByGroup(fileGroup: FileGroup): List<FileEntity> {
-        val paths = mutableListOf<String>()
-        when (fileGroup) {
-            is FileGroup.AUDIO -> {
-                paths.add(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_MUSIC).path)
-                paths.add(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_ALARMS).path)
-                paths.add(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_RINGTONES).path)
-            }
-
-            is FileGroup.DOCUMENTS -> paths.add(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS).path)
-
-            is FileGroup.VIDEOS -> paths.add(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_MOVIES).path)
-
-            is FileGroup.DOWNLOADS -> paths.add(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS).path)
-
-            is FileGroup.IMAGES -> {
-                paths.add(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES).path)
-                paths.add(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DCIM).path)
-            }
-
-            else -> {
-                paths.add(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS).path)
-            }
-        }
-        val fileList = ArrayList<File>()
-        for (path in paths) {
+        return withContext(Dispatchers.IO) {
+            val path = Environment.getExternalStorageDirectory().path
             val currentFile = File(path)
+            val fileList = ArrayList<File>()
             val files = currentFile.listFiles()
-            for (file in files!!)
-                fileList.add(file)
+
+            when (fileGroup) {
+                FileGroup.AUDIO -> {
+                    for (file in files!!)
+                        if (file.extensionType() == FileType.MP3
+                            || file.extensionType() == FileType.WAV
+                        ) fileList.add(file)
+                }
+
+                FileGroup.DOCUMENTS -> {
+                    for (file in files!!)
+                        if (file.extensionType() == FileType.PDF
+                            || file.extensionType() == FileType.DOC
+                        ) fileList.add(file)
+                }
+
+                FileGroup.VIDEOS -> {
+                    for (file in files!!)
+                        if (file.extensionType() == FileType.MP4) fileList.add(file)
+                }
+
+                is FileGroup.DOWNLOADS -> {
+                    val actualPath = Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS
+                    )
+                    val list = actualPath.listFiles()
+                    for (file in list!!)
+                        fileList.add(file)
+                }
+
+                is FileGroup.IMAGES -> {
+                    for (file in files!!)
+                        if (file.extensionType() == FileType.PNG
+                            || file.extensionType() == FileType.JPEG
+                            || file.extensionType() == FileType.JPG
+                        ) fileList.add(file)
+                }
+                is FileGroup.APK -> {
+                    for (file in files!!)
+                        if (file.extensionType() == FileType.APK)
+                            fileList.add(file)
+                }
+
+                is FileGroup.ARCHIVES -> {
+                    for (file in files!!)
+                        if (file.extensionType() == FileType.ZIP)
+                            fileList.add(file)
+                }
+
+                else -> {
+                    val actualPath = Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS
+                    )
+                    val list = actualPath.listFiles()
+                    for (file in list!!)
+                        fileList.add(file)
+                }
+            }
+            val finalList = fileList.map { mapper.mapFolderToFolderEntity(it) }
+            Log.d("ANUBIS", finalList.toString())
+            finalList
         }
-        return fileList.map { mapper.mapFolderToFolderEntity(it) }
     }
 
     override fun deleteFile(file: FileEntity) {
@@ -133,9 +162,16 @@ class FileManagerRepositoryImpl @Inject constructor(
     companion object {
         private const val DEFAULT_VALUE = "DEFAULT_VALUE"
         internal val extension = listOf(
-            ".jpeg", ".jpg", ".png", ".mp3",
-            ".wav", ".mp4", ".pdf", ".doc",
-            ".apk", ".docx", ".zip"
+            ".jpeg",
+            ".jpg",
+            ".png",
+            ".mp3",
+            ".wav",
+            ".mp4",
+            ".pdf",
+            ".doc",
+            ".apk",
+            ".zip"
         )
     }
 }

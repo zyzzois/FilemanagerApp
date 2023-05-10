@@ -7,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.entity.FileEntity
 import com.example.domain.entity.FileGroup
 import com.example.domain.usecase.GetFileListByGroupUseCase
-import com.example.domain.usecase.GetRecentUpdatedFileListUseCase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,8 +26,8 @@ class FilesByTypeViewModel @Inject constructor(
     val shouldOpenFilesInFolder: LiveData<Boolean>
         get() = _shouldOpenFilesInFolder
 
-    fun showFoldersInFileGroup(fileGroup: FileGroup) {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun showFilesInSelectedGroup(fileGroup: FileGroup) {
+        viewModelScope.launch {
             _fileList.postValue(getFileListByGroupUseCase(fileGroup))
         }
     }

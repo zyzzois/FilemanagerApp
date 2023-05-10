@@ -31,4 +31,7 @@
     <string name="rename">Переименовать</string>
     <string name="delete_item">Удалить</string>
     <string name="share_file">Поделиться</string>
+    <string name="question">Вы действительно хотите удалить файл?</string>
+    <string name="yes">Да</string>
+    <string name="cancel">Отмена</string>
 </resources>

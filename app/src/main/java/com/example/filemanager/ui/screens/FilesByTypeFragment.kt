@@ -2,6 +2,7 @@ package com.example.filemanager.ui.screens
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,6 +64,7 @@ class FilesByTypeFragment : Fragment() {
     private fun setupClickListener() {
         filesByTypeAdapter.onFileItemClickListener = {
             if (it.file.isDirectory) {
+                Log.d("ANUBIS2", args.filesGroup.toString())
                 findNavController().navigate(
                     FilesByTypeFragmentDirections.actionFilesByTypeFragmentSelf(
                         args.filesGroup
@@ -83,8 +85,9 @@ class FilesByTypeFragment : Fragment() {
     }
 
     private fun showFileList() {
+        Log.d("ANUBIS2", args.filesGroup.toString())
         with(viewModel) {
-            showFoldersInFileGroup(args.filesGroup)
+            showFilesInSelectedGroup(args.filesGroup)
             fileList.observe(viewLifecycleOwner) {
                 filesByTypeAdapter.submitList(it)
             }

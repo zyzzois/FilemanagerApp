@@ -13,7 +13,10 @@ class FileToEntityMapper @Inject constructor() {
         timestamp = file.lastModified(),
         fileType = file.extensionType(),
         file = file,
-        fileSize = file.length()
+        fileSize = file.length(),
+        numOfFilesInFolder = countFiles(file)
     )
+
+    private fun countFiles(file: File) = if (file.isFile) 0 else file.listFiles()?.size ?: 0
 
 }

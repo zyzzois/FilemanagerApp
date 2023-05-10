@@ -1,13 +1,15 @@
 package com.example.filemanager.ui.screens
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -25,7 +27,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import javax.inject.Inject
 
 class FoldersFragment : Fragment() {
-
     private val args by navArgs<FoldersFragmentArgs>()
 
     private val component by lazy {
@@ -45,13 +46,9 @@ class FoldersFragment : Fragment() {
 
     private lateinit var foldersAdapter: FileListAdapter
 
-    private val bottomSheetRenameMenu by lazy {
-        BottomSheetBehavior.from(binding.bottomMenuId.bottomMenu)
-    }
+    private lateinit var bottomSheetBehaviorActions: BottomSheetBehavior<LinearLayout>
+    private lateinit var bottomSheetBehaviorRename: BottomSheetBehavior<LinearLayout>
 
-    private val bottomSheetActionsMenu by lazy {
-        BottomSheetBehavior.from(binding.bottomMenuActions.bottomActions)
-    }
 
     private val mainPopupMenu by lazy {
         PopupMenu(context, binding.btnSorting)
@@ -72,25 +69,23 @@ class FoldersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        hideBottomMenus()
         init()
         showFolderList()
         setupClickListener()
         setupLongClickListener()
-        //setupOnBackPressed()
+        setupBottomSheet()
         setupMainPopUp()
     }
 
-    private fun hideBottomMenus() {
-        bottomSheetRenameMenu.apply {
-            peekHeight = 0
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
-        bottomSheetActionsMenu.apply {
-            peekHeight = 0
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
+    private fun setupBottomSheet() {
+        bottomSheetBehaviorActions = BottomSheetBehavior.from(binding.bottomMenuActions.bottomActions)
+        bottomSheetBehaviorRename = BottomSheetBehavior.from(binding.bottomMenuRename.bottomMenu)
+        bottomSheetBehaviorActions.peekHeight = 0
+        bottomSheetBehaviorRename.peekHeight = 0
+        bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
     }
+
 
 //    private fun setupOnBackPressed() {
 //        activity?.onBackPressedDispatcher?.addCallback(
@@ -108,14 +103,6 @@ class FoldersFragment : Fragment() {
             foldersAdapter = FileListAdapter(requireContext())
             rcView.adapter = foldersAdapter
             registerForContextMenu(btnSorting)
-        }
-        bottomSheetRenameMenu.apply {
-            peekHeight = 0
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
-        bottomSheetActionsMenu.apply {
-            peekHeight = 0
-            state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
@@ -155,35 +142,29 @@ class FoldersFragment : Fragment() {
     private fun setupLongClickListener() = with(binding) {
         foldersAdapter.onFileItemLongClickListener = {
             val selectedFile = it
-            bottomSheetActionsMenu.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_EXPANDED
             bottomSheetBackGround.visibility = View.VISIBLE
 
             bottomMenuActions.buttonDelete.setOnClickListener {
                 val builder = context?.let { it1 -> AlertDialog.Builder(it1) }
-                builder?.setTitle("Вы действительно хотите удалить файл?")
-                builder?.setPositiveButton("Да") { _, _ ->
+                builder?.setTitle(requireContext().getString(R.string.question))
+                builder?.setPositiveButton(requireContext().getString(R.string.yes)) { _, _ ->
                     viewModel.deleteFile(selectedFile)
-                    //TODO(update list after deleting)
-
-                    bottomSheetActionsMenu.state = BottomSheetBehavior.STATE_HIDDEN
-                    bottomSheetBackGround.visibility = View.INVISIBLE
+                    bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+                    bottomSheetBackGround.visibility = View.GONE
                 }
-                builder?.setNegativeButton("Отмена") { _, _ ->
-                    bottomSheetActionsMenu.state = BottomSheetBehavior.STATE_HIDDEN
-                    bottomSheetBackGround.visibility = View.INVISIBLE
+                builder?.setNegativeButton(requireContext().getString(R.string.cancel)) { _, _ ->
+                    bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+                    bottomSheetBackGround.visibility = View.GONE
                 }
                 val dialog = builder?.create()
                 dialog?.show()
             }
+
             bottomMenuActions.buttonRename.setOnClickListener {
-                bottomSheetRenameMenu.state = BottomSheetBehavior.STATE_EXPANDED
-                bottomSheetBackGround.visibility = View.VISIBLE
-
-
+                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
             }
 
-//            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-//            binding.bottomSheetBackGround.visibility = View.VISIBLE
         }
     }
 
@@ -221,19 +202,5 @@ class FoldersFragment : Fragment() {
     }
 
 
-    override fun onResume() {
-        hideBottomMenus()
-        super.onResume()
-    }
-
-    override fun onStart() {
-        hideBottomMenus()
-        super.onStart()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 
 }
