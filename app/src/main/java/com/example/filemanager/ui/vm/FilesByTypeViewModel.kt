@@ -7,12 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.entity.FileEntity
 import com.example.domain.entity.FileGroup
 import com.example.domain.usecase.GetFileListByGroupUseCase
+import com.example.domain.usecase.GetRecentUpdatedFileListUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FilesByTypeViewModel @Inject constructor(
-    private val getFileListByGroupUseCase: GetFileListByGroupUseCase,
+    private val getFileListByGroupUseCase: GetFileListByGroupUseCase
 ): ViewModel() {
 
     private val _fileList = MutableLiveData<List<FileEntity>?>()
@@ -32,6 +33,8 @@ class FilesByTypeViewModel @Inject constructor(
             _fileList.postValue(getFileListByGroupUseCase(fileGroup))
         }
     }
+
+
 
 
     fun setPath(path: String) {

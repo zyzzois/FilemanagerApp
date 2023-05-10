@@ -1,6 +1,5 @@
 <resources>
     <integer name="com_vk_sdk_AppId">51640299</integer>
-
     <string name="app_name">Filemanager</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -8,13 +7,28 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
+    <string name="custom_bottom_menu_title">Переименовать</string>
     <string name="menu_home">Home</string>
     <string name="menu_folders">Folders</string>
     <string name="menu_vkid">VK ID</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="authorization_using">Пссс, хочешь немного VK\'ида?</string>
+    <string name="vkid_state">Произошла авторизация...</string>
+    <string name="vk_id">Хочу</string>
+    <string name="continue_without_authorization">Пока что обойдусь ;)</string>
+    <string name="deleteText">Отмена</string>
+    <string name="OkText">Ок</string>
+    <string name="folder_inaccessible">"Содержимое этой папки не может быть отображено из-за ограничений Android"</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="back">вернуться</string>
     <string name="timestamp_files">%1$s Files</string>
+    <string name="sortByFromLargestToSmallest">От большего к меньшему</string>
+    <string name="uploadToVkDocs">Загрузить в VK Документы</string>
+    <string name="sortByName">По имени</string>
+    <string name="delete">Удалить</string>
+    <string name="sortByDate">По дате изменения</string>
+    <string name="sortByType">По типу</string>
+    <string name="edit">Переименовать</string>
+    <string name="rename">Переименовать</string>
+    <string name="delete_item">Удалить</string>
+    <string name="share_file">Поделиться</string>
 </resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sortByName"
+        android:title="@string/sortByName"
+        />
+    <item
+        android:id="@+id/sortByFromLargestToSmallest"
+        android:title="@string/sortByFromLargestToSmallest"
+        />
+    <item
+        android:id="@+id/sortByType"
+        android:title="@string/sortByType"
+        />
+    <item
+        android:id="@+id/sortByDate"
+        android:title="@string/sortByDate"
+        />
+
+</menu>

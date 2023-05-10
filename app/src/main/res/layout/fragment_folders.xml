@@ -1,56 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.screens.FoldersFragment">
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-
-        <ImageButton
-            android:id="@+id/btnDropdown"
-            android:background="@drawable/ic_dropdown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"/>
-
-        <TextView
-            android:id="@+id/tv_path"
-            android:layout_width="0dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:gravity="start"
-            android:padding="4dp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/vk_sans_display_regular"
-            android:text=":/path" />
-
-        <ImageButton
-            android:id="@+id/btnSorting"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/ic_sort"
-            android:layout_width="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"/>
-
-
-    </LinearLayout>
-    
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcView"
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        android:orientation="vertical"
+        tools:context=".ui.screens.FoldersFragment">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <ImageButton
+                android:id="@+id/btnDropdown"
+                android:background="@drawable/ic_dropdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tv_path"
+                android:layout_width="0dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/vk_sans_display_regular"
+                android:text=":/path" />
+
+            <ImageButton
+                android:id="@+id/btnSorting"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/ic_sort"
+                android:layout_width="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"/>
+
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/bottomSheetBackGround"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:background="@color/background_color"
+        android:layout_height="match_parent" />
+
+    <include
+        android:id="@+id/bottom_menu_id"
+        layout="@layout/custom_bottom_menu"/>
+    <include
+        android:id="@+id/bottom_menu_actions"
+        layout="@layout/actions_bottom_menu"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

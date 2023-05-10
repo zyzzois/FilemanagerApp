@@ -6,10 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.entity.FileGroup
 import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.databinding.FragmentHomeBinding
+import com.example.filemanager.ui.recycler.FileListAdapter
+import com.example.filemanager.ui.vm.HomeViewModel
+import com.example.filemanager.ui.vm.ViewModelFactory
+import com.example.filemanager.utils.Constants.HOME_FRAGMENT_BINDING_IS_NULL
+import javax.inject.Inject
 
 class HomeFragment : Fragment() {
 
@@ -17,10 +24,18 @@ class HomeFragment : Fragment() {
         (requireActivity().application as FileManagerApp).component
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory)[HomeViewModel::class.java]
+    }
+
     private var _binding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding
-        get() = _binding ?: throw RuntimeException(BINDING_EXCEPTION_MESSAGE)
+        get() = _binding ?: throw RuntimeException(HOME_FRAGMENT_BINDING_IS_NULL)
 
+    private lateinit var recentUpdatedListAdapter: FileListAdapter
 
     override fun onAttach(context: Context) {
         component.inject(this)
@@ -32,7 +47,6 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -40,6 +54,23 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initButtons()
+        init()
+        showRecentUpdatedFileList()
+    }
+
+    private fun showRecentUpdatedFileList() {
+        viewModel.findLastModifiedFileList()
+        viewModel.lastModifiedFileList.observe(viewLifecycleOwner) {
+            recentUpdatedListAdapter.submitList(it)
+        }
+    }
+
+    private fun init() {
+        with(binding) {
+            rcView.layoutManager = LinearLayoutManager(activity)
+            recentUpdatedListAdapter = FileListAdapter(requireContext())
+            rcView.adapter = recentUpdatedListAdapter
+        }
     }
 
     private fun initButtons() {
@@ -100,9 +131,5 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val BINDING_EXCEPTION_MESSAGE = "HomeFragmentBinding = null"
     }
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/place_holder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.screens.VKIDActivity">
+
+    <Button
+        android:id="@+id/buttonSignInVK"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/color_blue_vk_sign"
+        android:fontFamily="@font/vk_sans_display_bold"
+        android:text="@string/vk_id"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/textViewAuthUsing"
+        app:layout_constraintStart_toStartOf="@+id/textViewAuthUsing"
+        app:layout_constraintTop_toBottomOf="@+id/textViewAuthUsing" />
+
+    <TextView
+        android:id="@+id/textViewAuthUsing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="236dp"
+        android:fontFamily="@font/vk_sans_display_regular"
+        android:text="@string/authorization_using"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonSkipAuth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/color_blue_vk_sign"
+        android:text="@string/continue_without_authorization"
+        android:fontFamily="@font/vk_sans_display_regular"
+        android:textSize="13sp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

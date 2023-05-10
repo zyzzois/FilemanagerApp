@@ -27,17 +27,9 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
-    private val authLauncher = VK.login(this as ComponentActivity) { result : VKAuthenticationResult ->
-        when (result) {
-            is VKAuthenticationResult.Success -> {}
-            is VKAuthenticationResult.Failed -> { }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        authViaVK()
         setSupportActionBar(binding.appBarMain.toolbar)
         requestStoragePermission()
 
@@ -53,9 +45,7 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
-    private fun authViaVK() {
-        authLauncher.launch(arrayListOf(VKScope.DOCS))
-    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -82,8 +72,6 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-
 
 
 

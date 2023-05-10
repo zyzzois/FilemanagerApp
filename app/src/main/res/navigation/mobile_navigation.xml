@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_home">
+    app:startDestination="@id/nav_folders">
 
     <fragment
         android:id="@+id/nav_home"
@@ -50,12 +50,11 @@
             app:nullable="true"
             android:defaultValue="DEFAULT_PATH" />
     </fragment>
-
     <fragment
         android:id="@+id/nav_vkid"
-        android:name="com.example.filemanager.ui.screens.AuthorizationFragment"
-        android:label="VK ID"
-        tools:layout="@layout/fragment_authorization" />
+        android:name="com.example.filemanager.ui.screens.VKIDFragment"
+        android:label="VKIDFragment"
+        tools:layout="@layout/fragment_v_k_i_d"/>
 
 
 </navigation>

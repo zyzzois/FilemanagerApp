@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottomActions"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp"
+    android:weightSum="3"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    android:background="@drawable/custom_bottom_menu_rounded_back"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/buttonShare"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true">
+
+        <ImageButton
+            android:layout_gravity="center"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_share" />
+
+        <TextView
+            android:text="@string/share_file"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/vk_sans_display_regular"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonDelete"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true">
+        <ImageButton
+            android:layout_gravity="center"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_delete" />
+        <TextView
+            android:text="@string/delete_item"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/vk_sans_display_regular"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonRename"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true">
+        <ImageButton
+            android:layout_gravity="center"
+            android:layout_width="30dp"
+            android:focusableInTouchMode="false"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_edit" />
+        <TextView
+            android:text="@string/rename"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/vk_sans_display_regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

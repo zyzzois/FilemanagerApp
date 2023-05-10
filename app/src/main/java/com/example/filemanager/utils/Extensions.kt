@@ -19,5 +19,4 @@ fun AppCompatActivity.showStoragePermissionDialog(requestCode: Int) {
     ActivityCompat.requestPermissions(this, permission, requestCode)
 }
 
-fun FileEntity.folderLength() = this.file.listFiles()?.size ?: 1
 

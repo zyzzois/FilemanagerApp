@@ -5,24 +5,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.filemanager.R
 import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.databinding.FragmentFoldersBinding
 import com.example.filemanager.ui.recycler.FileListAdapter
 import com.example.filemanager.utils.FileOpener
 import com.example.filemanager.ui.vm.FoldersViewModel
 import com.example.filemanager.ui.vm.ViewModelFactory
+import com.example.filemanager.utils.Constants.FRAGMENT_FOLDERS_BINDING_IS_NULL
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import javax.inject.Inject
 
 class FoldersFragment : Fragment() {
 
     private val args by navArgs<FoldersFragmentArgs>()
 
-    private val component by lazy { (requireActivity().application as FileManagerApp).component }
+    private val component by lazy {
+        (requireActivity().application as FileManagerApp).component
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -33,9 +41,21 @@ class FoldersFragment : Fragment() {
 
     private var _binding: FragmentFoldersBinding? = null
     private val binding: FragmentFoldersBinding
-        get() = _binding ?: throw RuntimeException(BINDING_EXCEPTION_MESSAGE)
+        get() = _binding ?: throw RuntimeException(FRAGMENT_FOLDERS_BINDING_IS_NULL)
 
     private lateinit var foldersAdapter: FileListAdapter
+
+    private val bottomSheetRenameMenu by lazy {
+        BottomSheetBehavior.from(binding.bottomMenuId.bottomMenu)
+    }
+
+    private val bottomSheetActionsMenu by lazy {
+        BottomSheetBehavior.from(binding.bottomMenuActions.bottomActions)
+    }
+
+    private val mainPopupMenu by lazy {
+        PopupMenu(context, binding.btnSorting)
+    }
 
     override fun onAttach(context: Context) {
         component.inject(this)
@@ -52,17 +72,50 @@ class FoldersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
+        hideBottomMenus()
+        init()
         showFolderList()
         setupClickListener()
         setupLongClickListener()
+        //setupOnBackPressed()
+        setupMainPopUp()
     }
 
-    private fun initRecyclerView() {
+    private fun hideBottomMenus() {
+        bottomSheetRenameMenu.apply {
+            peekHeight = 0
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        bottomSheetActionsMenu.apply {
+            peekHeight = 0
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+    }
+
+//    private fun setupOnBackPressed() {
+//        activity?.onBackPressedDispatcher?.addCallback(
+//            viewLifecycleOwner,
+//            object : OnBackPressedCallback(true) {
+//                override fun handleOnBackPressed() {
+//
+//                }
+//        })
+//    }
+
+    private fun init() {
         with(binding) {
             rcView.layoutManager = LinearLayoutManager(activity)
             foldersAdapter = FileListAdapter(requireContext())
             rcView.adapter = foldersAdapter
+            registerForContextMenu(btnSorting)
+        }
+        bottomSheetRenameMenu.apply {
+            peekHeight = 0
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        bottomSheetActionsMenu.apply {
+            peekHeight = 0
+            state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
@@ -82,20 +135,100 @@ class FoldersFragment : Fragment() {
         foldersAdapter.onFileItemClickListener = {
             if (it.file.isDirectory) {
                 val path = it.file.absolutePath
-                findNavController().navigate(
-                    FoldersFragmentDirections.actionNavFoldersSelf().setPath(path)
-                )
-                viewModel.setPath(path)
+                if (viewModel.isAccessiblePath(path)) {
+                    viewModel.setPath(path)
+                    findNavController().navigate(
+                        FoldersFragmentDirections.actionNavFoldersSelf().setPath(path)
+                    )
+                } else {
+                    Toast.makeText(
+                        context,
+                        context?.getString(R.string.folder_inaccessible),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
             else FileOpener().openFile(requireContext(), it.file)
-
         }
     }
 
-    private fun setupLongClickListener() {
+    private fun setupLongClickListener() = with(binding) {
         foldersAdapter.onFileItemLongClickListener = {
+            val selectedFile = it
+            bottomSheetActionsMenu.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetBackGround.visibility = View.VISIBLE
 
+            bottomMenuActions.buttonDelete.setOnClickListener {
+                val builder = context?.let { it1 -> AlertDialog.Builder(it1) }
+                builder?.setTitle("Вы действительно хотите удалить файл?")
+                builder?.setPositiveButton("Да") { _, _ ->
+                    viewModel.deleteFile(selectedFile)
+                    //TODO(update list after deleting)
+
+                    bottomSheetActionsMenu.state = BottomSheetBehavior.STATE_HIDDEN
+                    bottomSheetBackGround.visibility = View.INVISIBLE
+                }
+                builder?.setNegativeButton("Отмена") { _, _ ->
+                    bottomSheetActionsMenu.state = BottomSheetBehavior.STATE_HIDDEN
+                    bottomSheetBackGround.visibility = View.INVISIBLE
+                }
+                val dialog = builder?.create()
+                dialog?.show()
+            }
+            bottomMenuActions.buttonRename.setOnClickListener {
+                bottomSheetRenameMenu.state = BottomSheetBehavior.STATE_EXPANDED
+                bottomSheetBackGround.visibility = View.VISIBLE
+
+
+            }
+
+//            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+//            binding.bottomSheetBackGround.visibility = View.VISIBLE
         }
+    }
+
+    private fun setupMainPopUp() = with(mainPopupMenu) {
+        binding.btnSorting.setOnClickListener {
+            menu.clear()
+            menuInflater.inflate(R.menu.sort_menu, menu)
+            setOnMenuItemClickListener { item ->
+                if (item != null) {
+                    when (item.itemId) {
+                        R.id.sortByName -> {
+                            viewModel.folderList.observe(viewLifecycleOwner) { it ->
+                                if (it != null)
+                                    foldersAdapter.submitList(it.sortedBy { it.filename })
+                            }
+                        }
+                        R.id.sortByDate -> {
+                            viewModel.folderList.observe(viewLifecycleOwner) { it ->
+                                if (it != null)
+                                    foldersAdapter.submitList(it.sortedBy { it.timestamp })
+                            }
+                        }
+                        R.id.sortByFromLargestToSmallest -> {
+                            viewModel.folderList.observe(viewLifecycleOwner) { it ->
+                                if (it != null)
+                                    foldersAdapter.submitList(it.sortedBy { it.fileSize })
+                            }
+                        }
+                    }
+                }
+                true
+            }
+            show()
+        }
+    }
+
+
+    override fun onResume() {
+        hideBottomMenus()
+        super.onResume()
+    }
+
+    override fun onStart() {
+        hideBottomMenus()
+        super.onStart()
     }
 
     override fun onDestroyView() {
@@ -103,9 +236,4 @@ class FoldersFragment : Fragment() {
         _binding = null
     }
 
-    companion object {
-        private const val ERROR_MSG = "Содержимое этой папки " +
-                "не может быть отображено из-за ограничений Android"
-        private const val BINDING_EXCEPTION_MESSAGE = "FragmentFoldersBinding = null"
-    }
 }

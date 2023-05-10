@@ -10,19 +10,10 @@ class FileToEntityMapper @Inject constructor() {
 
     fun mapFolderToFolderEntity(file: File) = FileEntity(
         filename = file.name,
-        timestamp = file.name,
+        timestamp = file.lastModified(),
         fileType = file.extensionType(),
-        file = file
+        file = file,
+        fileSize = file.length()
     )
-
-    fun mapFolderEntityToFolder(folderEntityList: List<FileEntity>): ArrayList<File> {
-        val res = ArrayList<File>()
-        folderEntityList.forEach {
-            res.add(mapFileEntityToFile(it))
-        }
-        return res
-    }
-
-    private fun mapFileEntityToFile(fileEntity: FileEntity) = File(fileEntity.file.path)
 
 }

@@ -49,7 +49,6 @@ class FileManagerRepositoryImpl @Inject constructor(
         }
     }
 
-
     override suspend fun getFileListByGroup(fileGroup: FileGroup): List<FileEntity> {
         val paths = mutableListOf<String>()
         when (fileGroup) {
@@ -93,30 +92,50 @@ class FileManagerRepositoryImpl @Inject constructor(
         return fileList.map { mapper.mapFolderToFolderEntity(it) }
     }
 
-    override suspend fun getRecentUpdatedFileList(): List<FileEntity> { TODO("Not yet implemented") }
+    override fun deleteFile(file: FileEntity) {
+        val fileToDelete = file.file
+        if (fileToDelete.exists())
+            fileToDelete.delete()
+    }
 
-    override fun shareFile(file: FileEntity) { TODO("Not yet implemented") }
+    override suspend fun getRecentUpdatedFileList(): List<FileEntity> {
+        return withContext(Dispatchers.IO) {
+            val rootDir = Environment.getExternalStorageDirectory()
+            val list = ArrayList<File>()
+            val resultList = ArrayList<FileEntity>()
+            val files = rootDir.listFiles()
+            for (singleFile in files!!) {
+                list.add(singleFile)
 
-    override fun editFile(file: FileEntity) { TODO("Not yet implemented") }
-
-    override fun deleteFile(file: FileEntity) { TODO("Not yet implemented") }
+            }
 
 
+            list.forEach {
+                resultList.add(mapper.mapFolderToFolderEntity(it))
+            }
+
+
+            val res = resultList.sortedByDescending {
+                it.file.lastModified()
+            }
+            res
+        }
+    }
+
+    override fun editFile(file: FileEntity) {
+
+    }
+
+    override fun shareFile(file: FileEntity) {
+        TODO("Not yet implemented")
+    }
 
     companion object {
         private const val DEFAULT_VALUE = "DEFAULT_VALUE"
         internal val extension = listOf(
-            ".jpeg",
-            ".jpg",
-            ".png",
-            ".mp3",
-            ".wav",
-            ".mp4",
-            ".pdf",
-            ".doc",
-            ".apk",
-            ".docx",
-            ".zip"
+            ".jpeg", ".jpg", ".png", ".mp3",
+            ".wav", ".mp4", ".pdf", ".doc",
+            ".apk", ".docx", ".zip"
         )
     }
 }

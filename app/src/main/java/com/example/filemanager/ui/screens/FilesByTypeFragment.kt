@@ -15,6 +15,7 @@ import com.example.filemanager.databinding.FragmentFilesByTypeBinding
 import com.example.filemanager.ui.recycler.FileListAdapter
 import com.example.filemanager.ui.vm.FilesByTypeViewModel
 import com.example.filemanager.ui.vm.ViewModelFactory
+import com.example.filemanager.utils.Constants.FRAGMENT_FILES_BY_TYPE_BINDING_IS_NULL
 import com.example.filemanager.utils.FileOpener
 import javax.inject.Inject
 
@@ -31,7 +32,7 @@ class FilesByTypeFragment : Fragment() {
 
     private var _binding: FragmentFilesByTypeBinding? = null
     private val binding: FragmentFilesByTypeBinding
-        get() = _binding ?: throw RuntimeException(BINDING_EXCEPTION_MESSAGE)
+        get() = _binding ?: throw RuntimeException(FRAGMENT_FILES_BY_TYPE_BINDING_IS_NULL)
 
     private lateinit var filesByTypeAdapter: FileListAdapter
 
@@ -93,7 +94,4 @@ class FilesByTypeFragment : Fragment() {
 
 
 
-    companion object {
-        private const val BINDING_EXCEPTION_MESSAGE = "FragmentFilesByTypeBinding = null"
-    }
 }
