@@ -2,6 +2,7 @@ package com.example.data.repository
 
 import android.os.Environment
 import android.util.Log
+import com.example.data.database.FileDao
 import com.example.data.mapper.FileToEntityMapper
 import com.example.data.utils.extensionType
 import com.example.domain.entity.FileEntity
@@ -14,7 +15,8 @@ import java.io.File
 import javax.inject.Inject
 
 class FileManagerRepositoryImpl @Inject constructor(
-    private val mapper: FileToEntityMapper
+    private val mapper: FileToEntityMapper,
+    private val fileDao: FileDao
 ): FileManagerRepository {
 
     override suspend fun getFolderList(path: String): List<FileEntity> {
@@ -135,15 +137,10 @@ class FileManagerRepositoryImpl @Inject constructor(
             val files = rootDir.listFiles()
             for (singleFile in files!!) {
                 list.add(singleFile)
-
             }
-
-
             list.forEach {
                 resultList.add(mapper.mapFolderToFolderEntity(it))
             }
-
-
             val res = resultList.sortedByDescending {
                 it.file.lastModified()
             }
@@ -151,8 +148,8 @@ class FileManagerRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun editFile(file: FileEntity) {
-
+    override suspend fun uploadHashCodeOfCheckedFileToDatabase(file: FileEntity) {
+        fileDao.insertNewUpdatedFile(mapper.mapEntityToDbModel(file))
     }
 
     override fun shareFile(file: FileEntity) {

@@ -1,5 +1,6 @@
 package com.example.data.mapper
 
+import com.example.data.database.FileModelDb
 import com.example.data.utils.extensionType
 import com.example.domain.entity.FileEntity
 import com.example.domain.entity.FileType
@@ -17,6 +18,10 @@ class FileToEntityMapper @Inject constructor() {
         numOfFilesInFolder = countFiles(file)
     )
 
-    private fun countFiles(file: File) = if (file.isFile) 0 else file.listFiles()?.size ?: 0
+    fun mapEntityToDbModel(fileEntity: FileEntity) = FileModelDb(
+        fileHashCode = fileEntity.hashCode(),
+        id = fileEntity.id
+    )
 
+    private fun countFiles(file: File) = if (file.isFile) 0 else file.listFiles()?.size ?: 0
 }

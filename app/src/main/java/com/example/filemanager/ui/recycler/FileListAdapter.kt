@@ -77,7 +77,6 @@ class FileListAdapter(private val context: Context): ListAdapter<FileEntity, Fil
                     tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
                     imageFileIcon.setImageResource(R.drawable.ic_zip)
                 }
-
                 else -> {
                     imageFileIcon.setImageResource(R.drawable.ic_folder)
                 }
@@ -85,7 +84,4 @@ class FileListAdapter(private val context: Context): ListAdapter<FileEntity, Fil
             tvFileName.text = fileItem.filename
         }
     }
-
-
-
 }

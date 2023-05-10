@@ -3,18 +3,21 @@ package com.example.filemanager.ui.screens
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.domain.entity.FileEntity
 import com.example.filemanager.R
 import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.databinding.FragmentFoldersBinding
@@ -24,9 +27,12 @@ import com.example.filemanager.ui.vm.FoldersViewModel
 import com.example.filemanager.ui.vm.ViewModelFactory
 import com.example.filemanager.utils.Constants.FRAGMENT_FOLDERS_BINDING_IS_NULL
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.vk.api.sdk.VK
+import com.vk.api.sdk.auth.VKAuthenticationResult
 import javax.inject.Inject
 
 class FoldersFragment : Fragment() {
+
     private val args by navArgs<FoldersFragmentArgs>()
 
     private val component by lazy {
@@ -86,17 +92,6 @@ class FoldersFragment : Fragment() {
         bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-
-//    private fun setupOnBackPressed() {
-//        activity?.onBackPressedDispatcher?.addCallback(
-//            viewLifecycleOwner,
-//            object : OnBackPressedCallback(true) {
-//                override fun handleOnBackPressed() {
-//
-//                }
-//        })
-//    }
-
     private fun init() {
         with(binding) {
             rcView.layoutManager = LinearLayoutManager(activity)
@@ -135,7 +130,10 @@ class FoldersFragment : Fragment() {
                     ).show()
                 }
             }
-            else FileOpener().openFile(requireContext(), it.file)
+            else {
+                viewModel.saveCheckedFileToDB(it)
+                FileOpener().openFile(requireContext(), it.file)
+            }
         }
     }
 
@@ -162,9 +160,18 @@ class FoldersFragment : Fragment() {
             }
 
             bottomMenuActions.buttonRename.setOnClickListener {
+                bottomSheetBackGround.visibility = View.GONE
                 bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+                bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_EXPANDED
+                bottomSheetBackGround.visibility = View.VISIBLE
+                bottomMenuRename.inputFileName.setText(selectedFile.filename)
+                //TODO(editor file mode)
             }
+            bottomMenuActions.buttonShare.setOnClickListener {
+                bottomSheetBackGround.visibility = View.GONE
+                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
 
+            }
         }
     }
 
@@ -201,6 +208,14 @@ class FoldersFragment : Fragment() {
         }
     }
 
-
+//    private fun setupOnBackPressed() {
+//        activity?.onBackPressedDispatcher?.addCallback(
+//            viewLifecycleOwner,
+//            object : OnBackPressedCallback(true) {
+//                override fun handleOnBackPressed() {
+//
+//                }
+//        })
+//    }
 
 }

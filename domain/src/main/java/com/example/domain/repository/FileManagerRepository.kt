@@ -7,8 +7,7 @@ interface FileManagerRepository {
     suspend fun getFolderList(path: String): List<FileEntity>
     suspend fun getFileListByGroup(fileGroup: FileGroup): List<FileEntity>
     suspend fun getRecentUpdatedFileList(): List<FileEntity>
+    suspend fun uploadHashCodeOfCheckedFileToDatabase(file: FileEntity)
     fun shareFile(file: FileEntity)
-    fun editFile(file: FileEntity)
     fun deleteFile(file: FileEntity)
-
 }
