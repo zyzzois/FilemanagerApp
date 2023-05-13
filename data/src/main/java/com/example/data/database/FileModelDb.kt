@@ -9,5 +9,8 @@ import java.io.File
 data class FileModelDb(
     @PrimaryKey(autoGenerate = true)
     var id: Int,
-    val fileHashCode: Int
+    val fileHashCode: Int,
+    val fileName: String,
+    val path: String,
+    val fileType: String
 )

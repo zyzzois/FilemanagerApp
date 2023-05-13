@@ -28,11 +28,9 @@ class FilesByTypeViewModel @Inject constructor(
 
     fun showFilesInSelectedGroup(fileGroup: FileGroup) {
         viewModelScope.launch {
-            _fileList.postValue(getFileListByGroupUseCase(fileGroup))
+            _fileList.value = getFileListByGroupUseCase(fileGroup)
         }
     }
-
-
 
 
     fun setPath(path: String) {

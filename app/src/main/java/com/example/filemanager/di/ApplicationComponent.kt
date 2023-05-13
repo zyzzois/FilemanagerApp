@@ -5,7 +5,7 @@ import com.example.filemanager.ui.screens.FilesByTypeFragment
 import com.example.filemanager.ui.screens.FoldersFragment
 import com.example.filemanager.ui.screens.HomeFragment
 import com.example.filemanager.ui.screens.MainActivity
-import com.example.filemanager.ui.screens.VKIDActivity
+import com.example.filemanager.ui.screens.StartActivity
 import com.example.filemanager.ui.screens.VKIDFragment
 import dagger.BindsInstance
 import dagger.Component
@@ -23,7 +23,7 @@ interface ApplicationComponent {
     fun inject(fragment: FilesByTypeFragment)
     fun inject(fragment: VKIDFragment)
     fun inject(activity: MainActivity)
-    fun inject(activity: VKIDActivity)
+    fun inject(activity: StartActivity)
 
     @Component.Factory
     interface ApplicationComponentFactory {

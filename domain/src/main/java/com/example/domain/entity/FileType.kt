@@ -17,6 +17,8 @@ sealed class FileType: Parcelable {
     object MP3: FileType()
     object MP4: FileType()
     object APK: FileType()
+    object PPT: FileType()
+    object XLSX: FileType()
 }
 
 
