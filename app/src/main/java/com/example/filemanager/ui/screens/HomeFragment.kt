@@ -113,8 +113,8 @@ class HomeFragment : Fragment() {
             buttonDownloadFiles.setOnClickListener {
                 findNavController().navigate(
                     HomeFragmentDirections.actionNavHomeToFilesByTypeFragment(
-                        FileGroup.DOCUMENTS
-                    ).setFilesGroup(FileGroup.AUDIO)
+                        FileGroup.DOWNLOADS
+                    ).setFilesGroup(FileGroup.DOWNLOADS)
                 )
             }
             buttonDocFiles.setOnClickListener {

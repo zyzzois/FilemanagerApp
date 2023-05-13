@@ -1,7 +1,6 @@
 package com.example.data.repository
 
 import android.os.Environment
-import android.util.Log
 import com.example.data.database.FileDao
 import com.example.data.mapper.FileToEntityMapper
 import com.example.data.utils.extensionIs
@@ -53,7 +52,6 @@ class FileManagerRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getFileListByGroup(fileGroup: FileGroup): List<FileEntity> {
-        Log.d("REPOSITORY_IMPL", "$fileGroup")
         return withContext(Dispatchers.IO) {
             val filesByGroup = getAllFilesByGroup(
                 File(Environment.getExternalStorageDirectory().path),
@@ -100,82 +98,59 @@ class FileManagerRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             val files = mutableListOf<File>()
             val listFiles = dir.listFiles()
-
             if (listFiles != null) {
                 for (file in listFiles) {
-                    if (file.isDirectory && file.canRead())
-                        files.addAll(getAllFiles(file))
-                    else
-                        files.add(file)
+                    if (file.isDirectory && file.canRead()) files.addAll(getAllFiles(file))
+                    else files.add(file)
                 }
             }
-
             files
         }
     }
 
     private suspend fun getAllFilesByGroup(dir: File, fileGroup: FileGroup): List<File> {
-        if (fileGroup == FileGroup.DOWNLOADS) {
-            Log.d("REPOIMPL", "Docs")
-            val downloadedDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS
-            ).listFiles()
-            val downloadedFiles = mutableListOf<File>()
-            for (file in downloadedDir!!) {
-                if (file.isFile && !file.isHidden && file.canRead() && file.extension in extension) {
-                    downloadedFiles.add(file)
-                }
-            }
-
-            return downloadedFiles
-        } else {
-            Log.d("REPOIMPL", "Docs2")
-            return withContext(Dispatchers.IO) {
-
-                val files = mutableListOf<File>()
+        return withContext(Dispatchers.IO) {
+            val files = mutableListOf<File>()
+            if (fileGroup != FileGroup.DOWNLOADS) {
                 val listFiles = dir.listFiles()
-
                 if (listFiles != null) {
                     for (file in listFiles) {
                         if (file.isDirectory && file.canRead())
-                            files.addAll(getAllFiles(file))
-                        else if (file.isFile) {
+                            files.addAll(getAllFilesByGroup(file, fileGroup))
+                        else if (file.isFile)
                             when (fileGroup) {
-                                FileGroup.IMAGES -> {
-                                    if (file.extensionIs(extension[0])
+                                FileGroup.IMAGES -> if (file.extensionIs(extension[0])
                                         || file.extensionIs(extension[1])
-                                        || file.extensionIs(extension[2])) {
-                                        files.add(file)
-                                    }
-                                }
-                                FileGroup.VIDEOS -> {
-                                    if (file.extensionIs(extension[5]))
-                                        files.add(file)
-                                }
-                                FileGroup.ARCHIVES -> {
-                                    if (file.extensionIs(extension[9]))
-                                        files.add(file)
-                                }
-                                FileGroup.DOCUMENTS -> {
-                                    if (file.extensionIs(extension[6])
+                                        || file.extensionIs(extension[2])) files.add(file)
+
+                                FileGroup.VIDEOS -> if (file.extensionIs(extension[5]))
+                                    files.add(file)
+
+                                FileGroup.ARCHIVES -> if (file.extensionIs(extension[9]))
+                                    files.add(file)
+
+                                FileGroup.DOCUMENTS -> if (file.extensionIs(extension[6])
                                         || file.extensionIs(extension[7])
-                                        || file.extensionIs(extension[9])
                                         || file.extensionIs(extension[10])
-                                    ) {
+                                    ) files.add(file)
+
+
+                                FileGroup.APK -> if (file.extensionIs(extension[8]))
                                         files.add(file)
-                                    }
-                                }
-                                FileGroup.APK -> {
-                                    if (file.extensionIs(extension[8]))
-                                        files.add(file)
-                                }
+
                                 else -> {}
                             }
-                        }
                     }
                 }
-                files
+            } else {
+                val downloadedDir = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS
+                ).listFiles()
+                for (file in downloadedDir!!)
+                    if (file.isFile && !file.isHidden && file.canRead() && file.extension in extension)
+                        files.add(file)
             }
+            files
         }
     }
 

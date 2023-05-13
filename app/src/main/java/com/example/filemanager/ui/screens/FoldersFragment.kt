@@ -3,32 +3,27 @@ package com.example.filemanager.ui.screens
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupMenu
-import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.domain.entity.FileEntity
 import com.example.filemanager.R
 import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.databinding.FragmentFoldersBinding
 import com.example.filemanager.ui.recycler.FileListAdapter
-import com.example.filemanager.utils.FileOpener
 import com.example.filemanager.ui.vm.FoldersViewModel
 import com.example.filemanager.ui.vm.ViewModelFactory
+import com.example.filemanager.utils.Constants.FOLDER_INACCESSIBLE
 import com.example.filemanager.utils.Constants.FRAGMENT_FOLDERS_BINDING_IS_NULL
+import com.example.filemanager.utils.FileOpener
+import com.example.filemanager.utils.showToast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.vk.api.sdk.VK
-import com.vk.api.sdk.auth.VKAuthenticationResult
 import javax.inject.Inject
 
 class FoldersFragment : Fragment() {
@@ -116,23 +111,13 @@ class FoldersFragment : Fragment() {
     private fun setupClickListener() {
         foldersAdapter.onFileItemClickListener = {
             if (it.file.isDirectory) {
-                val path = it.file.absolutePath
-                if (viewModel.isAccessiblePath(path)) {
-                    viewModel.setPath(path)
+                if (it.file.canRead())
                     findNavController().navigate(
-                        FoldersFragmentDirections.actionNavFoldersSelf().setPath(path)
+                        FoldersFragmentDirections.actionNavFoldersSelf().setPath(it.file.path)
                     )
-                } else {
-                    Toast.makeText(
-                        context,
-                        context?.getString(R.string.folder_inaccessible),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                else showToast(FOLDER_INACCESSIBLE)
             }
-            else {
-                FileOpener().openFile(requireContext(), it.file)
-            }
+            else FileOpener().openFile(requireContext(), it.file)
         }
     }
 
@@ -206,6 +191,5 @@ class FoldersFragment : Fragment() {
             show()
         }
     }
-
 
 }

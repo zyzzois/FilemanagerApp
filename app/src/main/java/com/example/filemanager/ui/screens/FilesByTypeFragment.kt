@@ -2,15 +2,16 @@ package com.example.filemanager.ui.screens
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.domain.entity.FileGroup
 import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.databinding.FragmentFilesByTypeBinding
 import com.example.filemanager.ui.recycler.FileListAdapter
@@ -56,9 +57,24 @@ class FilesByTypeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        updateTitle()
         initRecyclerView()
         showFileList()
         setupClickListener()
+    }
+
+    private fun updateTitle() {
+        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+        when (args.filesGroup) {
+            FileGroup.DOWNLOADS -> actionBar?.title = "Загрузки"
+            FileGroup.IMAGES -> actionBar?.title = "Фото"
+            FileGroup.ARCHIVES ->  actionBar?.title = "Архивы"
+            FileGroup.VIDEOS ->  actionBar?.title = "Видео"
+            FileGroup.AUDIO ->  actionBar?.title = "Музыка"
+            FileGroup.APK ->  actionBar?.title = "APK"
+            FileGroup.DOCUMENTS ->  actionBar?.title = "Документы"
+            else -> actionBar?.title = "чето"
+        }
     }
 
     private fun setupClickListener() {
