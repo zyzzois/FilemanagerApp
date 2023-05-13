@@ -131,7 +131,6 @@ class FoldersFragment : Fragment() {
                 }
             }
             else {
-                viewModel.saveCheckedFileToDB(it)
                 FileOpener().openFile(requireContext(), it.file)
             }
         }
@@ -208,14 +207,5 @@ class FoldersFragment : Fragment() {
         }
     }
 
-//    private fun setupOnBackPressed() {
-//        activity?.onBackPressedDispatcher?.addCallback(
-//            viewLifecycleOwner,
-//            object : OnBackPressedCallback(true) {
-//                override fun handleOnBackPressed() {
-//
-//                }
-//        })
-//    }
 
 }

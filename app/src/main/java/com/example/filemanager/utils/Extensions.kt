@@ -2,21 +2,18 @@ package com.example.filemanager.utils
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.domain.entity.FileEntity
-import java.io.File
 
-private var permission = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-
+@RequiresApi(Build.VERSION_CODES.R)
 fun AppCompatActivity.isStoragePermissionGranted(): Boolean {
     return ActivityCompat.checkSelfPermission(
-        this, permission[0]
+        this, Manifest.permission.MANAGE_EXTERNAL_STORAGE
     ) == PackageManager.PERMISSION_GRANTED
 }
 
-fun AppCompatActivity.showStoragePermissionDialog(requestCode: Int) {
-    ActivityCompat.requestPermissions(this, permission, requestCode)
-}
-
-
+fun AppCompatActivity.showToast(text: String) =
+    Toast.makeText(this, text, Toast.LENGTH_LONG).show()

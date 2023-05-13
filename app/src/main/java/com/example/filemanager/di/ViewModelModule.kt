@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.filemanager.ui.vm.FilesByTypeViewModel
 import com.example.filemanager.ui.vm.FoldersViewModel
 import com.example.filemanager.ui.vm.HomeViewModel
+import com.example.filemanager.ui.vm.StartViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -25,6 +26,11 @@ interface ViewModelModule {
     @Binds
     @ViewModelKey(HomeViewModel::class)
     fun bindHomeViewModel(viewModel: HomeViewModel): ViewModel
+
+    @IntoMap
+    @Binds
+    @ViewModelKey(StartViewModel::class)
+    fun bindStartViewModel(viewModel: StartViewModel): ViewModel
 
 
 }

@@ -6,8 +6,8 @@ import androidx.room.*
 @Dao
 interface FileDao {
     @Query("SELECT * FROM filesHashes")
-    fun getRecentUpdatedFileList(): LiveData<List<FileModelDb>>
+    fun getRecentUpdatedFileList(): List<FileModelDb>
 
-    @Insert
-    suspend fun insertNewUpdatedFile(file: FileModelDb)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addFile(fileModelDb: FileModelDb)
 }

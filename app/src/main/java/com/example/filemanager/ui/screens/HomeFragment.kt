@@ -103,11 +103,11 @@ class HomeFragment : Fragment() {
                     ).setFilesGroup(FileGroup.AUDIO)
                 )
             }
-            buttonOtherFiles.setOnClickListener {
+            buttonZipFiles.setOnClickListener {
                 findNavController().navigate(
                     HomeFragmentDirections.actionNavHomeToFilesByTypeFragment(
-                        FileGroup.DOCUMENTS
-                    ).setFilesGroup(FileGroup.DOCUMENTS)
+                        FileGroup.ARCHIVES
+                    ).setFilesGroup(FileGroup.ARCHIVES)
                 )
             }
             buttonDownloadFiles.setOnClickListener {

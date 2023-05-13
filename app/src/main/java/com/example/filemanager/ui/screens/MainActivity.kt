@@ -1,24 +1,36 @@
 package com.example.filemanager.ui.screens
 
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
-import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.filemanager.R
+import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.databinding.ActivityMainBinding
-import com.example.filemanager.utils.isStoragePermissionGranted
-import com.example.filemanager.utils.showStoragePermissionDialog
-import com.vk.api.sdk.VK
-import com.vk.api.sdk.auth.VKAuthenticationResult
-import com.vk.api.sdk.auth.VKScope
+import com.example.filemanager.ui.vm.StartViewModel
+import com.example.filemanager.ui.vm.ViewModelFactory
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+
+    private val component by lazy {
+        (application as FileManagerApp).component
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[StartViewModel::class.java]
+    }
 
     private var permissionGranted = false
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -28,11 +40,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
-        requestStoragePermission()
-
+        uploadFilesHashesToDatabase()
         val drawerLayout = binding.drawerLayout
         val navView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -45,6 +57,9 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
+    private fun uploadFilesHashesToDatabase() {
+        viewModel.uploadFilesHashesToDatabase()
+    }
 
 
     override fun onRequestPermissionsResult(
@@ -57,11 +72,7 @@ class MainActivity : AppCompatActivity() {
             permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun requestStoragePermission() {
-        if (!isStoragePermissionGranted()) {
-            showStoragePermissionDialog(REQUEST_CODE)
-        }
-    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
@@ -77,5 +88,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_CODE = 200
+        fun newIntentOpenMainActivity(context: Context) = Intent(context, MainActivity::class.java)
     }
 }

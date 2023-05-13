@@ -7,15 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.entity.FileEntity
 import com.example.domain.usecase.DeleteFileUseCase
-import com.example.domain.usecase.UploadHashCodeOfCheckedFileInDatabaseUseCase
 import com.example.domain.usecase.GetFolderListUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FoldersViewModel @Inject constructor(
     private val getFolderListUseCase: GetFolderListUseCase,
-    private val deleteFileUseCase: DeleteFileUseCase,
-    private val uploadHashCodeOfCheckedFileInDatabaseUseCase: UploadHashCodeOfCheckedFileInDatabaseUseCase
+    private val deleteFileUseCase: DeleteFileUseCase
 ) : ViewModel() {
 
     private val _currentPath = MutableLiveData<String>()
@@ -29,12 +27,6 @@ class FoldersViewModel @Inject constructor(
     fun updateList(path: String) {
         viewModelScope.launch {
             _folderList.postValue(getFolderListUseCase(path))
-        }
-    }
-
-    fun saveCheckedFileToDB(file: FileEntity) {
-        viewModelScope.launch {
-            uploadHashCodeOfCheckedFileInDatabaseUseCase(file)
         }
     }
 
