@@ -22,14 +22,14 @@ class FilesByTypeViewModel @Inject constructor(
     val currentPath: LiveData<String>
         get() = _currentPath
 
-    private val _shouldOpenFilesInFolder = MutableLiveData<Boolean>()
-    val shouldOpenFilesInFolder: LiveData<Boolean>
-        get() = _shouldOpenFilesInFolder
-
     fun showFilesInSelectedGroup(fileGroup: FileGroup) {
         viewModelScope.launch {
             _fileList.value = getFileListByGroupUseCase(fileGroup)
         }
+    }
+
+    fun clearList() {
+        _fileList.value = emptyList()
     }
 
 

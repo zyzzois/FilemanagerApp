@@ -134,6 +134,8 @@ class FileManagerRepositoryImpl @Inject constructor(
                                         || file.extensionIs(extension[10])
                                     ) files.add(file)
 
+                                FileGroup.AUDIO -> if (file.extensionIs(extension[3]))
+                                    files.add(file)
 
                                 FileGroup.APK -> if (file.extensionIs(extension[8]))
                                         files.add(file)

@@ -2,6 +2,7 @@ package com.example.filemanager.ui.screens
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,10 +58,15 @@ class FilesByTypeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setTextViewVisible()
         updateTitle()
         initRecyclerView()
         showFileList()
         setupClickListener()
+    }
+
+    private fun setTextViewVisible() {
+        binding.textViewWait.visibility = View.VISIBLE
     }
 
     private fun updateTitle() {
@@ -103,12 +109,19 @@ class FilesByTypeFragment : Fragment() {
         with(viewModel) {
             showFilesInSelectedGroup(args.filesGroup)
             fileList.observe(viewLifecycleOwner) {
+                binding.textViewWait.visibility = View.GONE
                 filesByTypeAdapter.submitList(it)
             }
         }
-
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.clearList()
+    }
 
-
+    override fun onResume() {
+        super.onResume()
+        setTextViewVisible()
+    }
 }

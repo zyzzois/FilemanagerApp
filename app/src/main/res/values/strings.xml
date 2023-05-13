@@ -36,4 +36,5 @@
     <string name="cancel">Отмена</string>
     <string name="accept">Разрешить</string>
     <string name="start_Text">Для корректной работы приложения разрешите доступ для управления всеми файлами на вашем устройстве</string>
+    <string name="wait">Секунду...</string>
 </resources>
