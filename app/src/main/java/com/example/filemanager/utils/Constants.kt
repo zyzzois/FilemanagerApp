@@ -8,4 +8,6 @@ object Constants {
     const val FOLDER_INACCESSIBLE = "Содержимое этой папки не может быть отображено из-за ограничений Android"
     const val SEARCH = "я помогу найти файл"
     const val DEFAULT_VALUE = "DEFAULT_VALUE"
+    const val SHARE_FILE = "Поделиться файлом"
+    const val PROVIDER = ".provider"
 }

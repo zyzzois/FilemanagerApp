@@ -51,5 +51,4 @@ class FoldersViewModel @Inject constructor(
         val filteredList = list.filter { it.filename.lowercase().contains(query.lowercase()) }
         _searchedQueryList.value = filteredList
     }
-
 }

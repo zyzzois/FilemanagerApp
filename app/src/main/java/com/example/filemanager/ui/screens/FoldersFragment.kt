@@ -220,6 +220,7 @@ class FoldersFragment : Fragment() {
             bottomMenuActions.buttonShare.setOnClickListener {
                 bottomSheetBackGround.visibility = View.GONE
                 bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+                FileOpener().shareFile(requireContext(), selectedFile.file)
 
             }
         }
