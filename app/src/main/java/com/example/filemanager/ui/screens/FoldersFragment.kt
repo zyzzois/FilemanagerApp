@@ -3,16 +3,29 @@ package com.example.filemanager.ui.screens
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupMenu
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.util.query
 import com.example.filemanager.R
 import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.databinding.FragmentFoldersBinding
@@ -21,10 +34,12 @@ import com.example.filemanager.ui.vm.FoldersViewModel
 import com.example.filemanager.ui.vm.ViewModelFactory
 import com.example.filemanager.utils.Constants.FOLDER_INACCESSIBLE
 import com.example.filemanager.utils.Constants.FRAGMENT_FOLDERS_BINDING_IS_NULL
+import com.example.filemanager.utils.Constants.SEARCH
 import com.example.filemanager.utils.FileOpener
 import com.example.filemanager.utils.showToast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import javax.inject.Inject
+import kotlin.math.log
 
 class FoldersFragment : Fragment() {
 
@@ -76,6 +91,56 @@ class FoldersFragment : Fragment() {
         setupLongClickListener()
         setupBottomSheet()
         setupMainPopUp()
+        setupSearchViewField()
+    }
+
+    private fun setupSearchViewField() {
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.main, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.search -> {
+                        val onActionExpandListener: MenuItem.OnActionExpandListener = object : MenuItem.OnActionExpandListener {
+                            override fun onMenuItemActionExpand(item: MenuItem): Boolean { return true }
+                            override fun onMenuItemActionCollapse(item: MenuItem): Boolean { return true }
+                        }
+                        menuItem.setOnActionExpandListener(onActionExpandListener)
+                        val searchView = menuItem.actionView as SearchView
+                        searchView.queryHint = SEARCH
+
+                        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+                            override fun onQueryTextSubmit(query: String?): Boolean {
+                                if (query != null)
+                                    viewModel.searchInCurrentList(query)
+                                viewModel.searchedQueryList.observe(viewLifecycleOwner) {
+                                    foldersAdapter.submitList(it)
+                                }
+                                return true
+                            }
+                            override fun onQueryTextChange(newText: String?): Boolean {
+                                view?.let {
+                                    if (newText != null)
+                                        viewModel.searchInCurrentList(newText)
+                                    viewModel.searchedQueryList.observe(viewLifecycleOwner) {
+                                        foldersAdapter.submitList(it)
+                                    }
+                                }
+                                return true
+                            }
+                        })
+                        menuItem.expandActionView()
+                    }
+                    else -> {
+                        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+                        drawerLayout.openDrawer(GravityCompat.START)
+                    }
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun setupBottomSheet() {
@@ -98,10 +163,10 @@ class FoldersFragment : Fragment() {
 
     private fun showFolderList() {
         with(viewModel) {
+            updateList(args.path)
             currentPath.observe(viewLifecycleOwner) {
                 binding.tvPath.text = it
             }
-            updateList(args.path)
             folderList.observe(viewLifecycleOwner) {
                 foldersAdapter.submitList(it)
             }
@@ -111,10 +176,11 @@ class FoldersFragment : Fragment() {
     private fun setupClickListener() {
         foldersAdapter.onFileItemClickListener = {
             if (it.file.isDirectory) {
-                if (it.file.canRead())
+                if (it.file.canRead()) {
                     findNavController().navigate(
                         FoldersFragmentDirections.actionNavFoldersSelf().setPath(it.file.path)
                     )
+                }
                 else showToast(FOLDER_INACCESSIBLE)
             }
             else FileOpener().openFile(requireContext(), it.file)

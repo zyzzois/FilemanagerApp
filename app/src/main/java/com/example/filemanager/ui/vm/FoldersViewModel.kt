@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.entity.FileEntity
 import com.example.domain.usecase.DeleteFileUseCase
 import com.example.domain.usecase.GetFolderListUseCase
+import com.example.filemanager.utils.Constants.DEFAULT_VALUE
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,10 +25,18 @@ class FoldersViewModel @Inject constructor(
     val folderList: LiveData<List<FileEntity>?>
         get() = _folderList
 
+    private val _searchedQueryList = MutableLiveData<List<FileEntity>>()
+    val searchedQueryList: LiveData<List<FileEntity>>
+        get() = _searchedQueryList
+
     fun updateList(path: String) {
         viewModelScope.launch {
             _folderList.postValue(getFolderListUseCase(path))
         }
+        if (path == DEFAULT_VALUE)
+            _currentPath.value = Environment.getExternalStorageDirectory().path
+        else
+            _currentPath.value = path
     }
 
     fun deleteFile(file: FileEntity) {
@@ -37,14 +46,10 @@ class FoldersViewModel @Inject constructor(
         }
     }
 
-    fun setPath(path: String) {
-        _currentPath.value = path
+    fun searchInCurrentList(query: String) {
+        val list = _folderList.value ?: return
+        val filteredList = list.filter { it.filename.lowercase().contains(query.lowercase()) }
+        _searchedQueryList.value = filteredList
     }
 
-    fun isAccessiblePath(path: String) = path != INACCESSIBLE_PATH_1 && path != INACCESSIBLE_PATH_2
-
-    companion object {
-        private val INACCESSIBLE_PATH_1 = "${Environment.getExternalStorageDirectory().path}/Android/obb"
-        private val INACCESSIBLE_PATH_2 = "${Environment.getExternalStorageDirectory().path}/Android/data"
-    }
 }

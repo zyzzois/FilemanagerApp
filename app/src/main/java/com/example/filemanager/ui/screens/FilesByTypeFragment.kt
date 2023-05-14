@@ -79,7 +79,7 @@ class FilesByTypeFragment : Fragment() {
             FileGroup.AUDIO ->  actionBar?.title = "Музыка"
             FileGroup.APK ->  actionBar?.title = "APK"
             FileGroup.DOCUMENTS ->  actionBar?.title = "Документы"
-            else -> actionBar?.title = "чето"
+            else -> actionBar?.title = "Files"
         }
     }
 

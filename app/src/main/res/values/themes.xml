@@ -30,6 +30,20 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="SearchNoteStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/light_soft_gray</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="endIconMode">clear_text</item>
+        <item name="startIconDrawable">@drawable/ic_search</item>
+
+    </style>
+
     <style name="Theme.Filemanager.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Filemanager.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
