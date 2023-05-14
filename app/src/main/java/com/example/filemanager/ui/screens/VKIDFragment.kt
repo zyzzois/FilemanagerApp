@@ -37,7 +37,7 @@ class VKIDFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonSignInVK.setOnClickListener {
-            val intent = Intent(activity, StartActivity::class.java)
+            val intent = Intent(activity, AuthorizationActivity::class.java)
             startActivity(intent)
         }
         binding.buttonSkipAuth.setOnClickListener {

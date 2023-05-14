@@ -10,4 +10,5 @@ object Constants {
     const val DEFAULT_VALUE = "DEFAULT_VALUE"
     const val SHARE_FILE = "Поделиться файлом"
     const val PROVIDER = ".provider"
+    const val ERROR = "Что-то пошло не так :("
 }
