@@ -71,20 +71,13 @@ class FileManagerRepositoryImpl @Inject constructor(
 
     override suspend fun getRecentUpdatedFileList(): List<FileEntity> {
         return withContext(Dispatchers.IO) {
-            val res = ArrayList<FileEntity>()
-            val rootFile = Environment.getExternalStorageDirectory()
-            val currentFilesInStorage = getAllFiles(rootFile)
+            val recentUpdatedFiles = mutableListOf<FileEntity>()
             val filesFromDb = fileDao.getRecentUpdatedFileList()
-            for (file in filesFromDb) {
-                val pathOfCurrentDbFile = file.path
-                if (true) {
-
-                }
-
-            }
-            res
+            for (file in filesFromDb)
+                if (File(file.path).hashCode() != file.fileHashCode)
+                    recentUpdatedFiles.add(mapper.mapDBModelToEntity(file))
+            recentUpdatedFiles
         }
-
     }
 
     override suspend fun uploadFilesHashesToDatabase() {
@@ -92,6 +85,10 @@ class FileManagerRepositoryImpl @Inject constructor(
         files.forEach {
             fileDao.addFile(mapper.mapEntityToDbModel(mapper.mapFileToFileEntity(it)))
         }
+    }
+
+    override suspend fun clearRecentUpdatedFileList() {
+        fileDao.clearRecentUpdatedFiles()
     }
 
     private suspend fun getAllFiles(dir: File): List<File> {
@@ -148,9 +145,7 @@ class FileManagerRepositoryImpl @Inject constructor(
                 val downloadedDir = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS
                 ).listFiles()
-                for (file in downloadedDir!!)
-                    if (file.isFile && !file.isHidden && file.canRead() && file.extension in extension)
-                        files.add(file)
+                for (file in downloadedDir!!) files.add(file)
             }
             files
         }

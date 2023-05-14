@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuHost
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -28,6 +30,10 @@ class MainActivity : AppCompatActivity() {
 
     private val component by lazy {
         (application as FileManagerApp).component
+    }
+
+    private val navController by lazy {
+        findNavController(R.id.nav_host_fragment_content_main)
     }
 
     @Inject
@@ -52,10 +58,9 @@ class MainActivity : AppCompatActivity() {
         uploadFilesHashesToDatabase()
         val drawerLayout = binding.drawerLayout
         val navView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_home, R.id.nav_folders, R.id.nav_vkid), drawerLayout
+            setOf(R.id.nav_home, R.id.nav_folders), drawerLayout
         )
 
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -63,9 +68,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun uploadFilesHashesToDatabase() {
-        viewModel.uploadFilesHashesToDatabase()
+        viewModel.clearDatabase()
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -77,28 +81,14 @@ class MainActivity : AppCompatActivity() {
             permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        menuInflater.inflate(R.menu.main, menu)
-//        val menuItem = menu.findItem(R.id.search)
-//        val searchView = menuItem.actionView as SearchView
-//        searchView.queryHint = SEARCH
-//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String?): Boolean {
-//                return false
-//            }
-//
-//            override fun onQueryTextChange(newText: String?): Boolean {
-//
-//                return false
-//            }
-//
-//        })
-//        return true
-//    }
-
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onDestroy() {
+        Log.d("ZOIS", "onDestroy")
+        super.onDestroy()
+        viewModel.uploadFilesHashesToDatabase()
     }
 
     companion object {

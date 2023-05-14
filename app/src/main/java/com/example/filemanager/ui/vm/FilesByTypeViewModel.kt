@@ -6,12 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.entity.FileEntity
 import com.example.domain.entity.FileGroup
+import com.example.domain.usecase.DeleteFileUseCase
 import com.example.domain.usecase.GetFileListByGroupUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FilesByTypeViewModel @Inject constructor(
-    private val getFileListByGroupUseCase: GetFileListByGroupUseCase
+    private val getFileListByGroupUseCase: GetFileListByGroupUseCase,
+    private val deleteFileUseCase: DeleteFileUseCase
 ): ViewModel() {
 
     private val _fileList = MutableLiveData<List<FileEntity>?>()
@@ -28,10 +30,16 @@ class FilesByTypeViewModel @Inject constructor(
         }
     }
 
+    fun deleteFile(file: FileEntity) {
+        deleteFileUseCase(file)
+        _fileList.value = fileList.value?.filterNot {
+            it == file
+        }
+    }
+
     fun clearList() {
         _fileList.value = emptyList()
     }
-
 
     fun setPath(path: String) {
         _currentPath.value = path

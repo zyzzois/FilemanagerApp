@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupMenu
+import androidx.appcompat.view.menu.MenuView
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -41,7 +42,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import javax.inject.Inject
 import kotlin.math.log
 
-class FoldersFragment : Fragment() {
+class FoldersFragment : Fragment(), MenuProvider {
 
     private val args by navArgs<FoldersFragmentArgs>()
 
@@ -64,7 +65,6 @@ class FoldersFragment : Fragment() {
 
     private lateinit var bottomSheetBehaviorActions: BottomSheetBehavior<LinearLayout>
     private lateinit var bottomSheetBehaviorRename: BottomSheetBehavior<LinearLayout>
-
 
     private val mainPopupMenu by lazy {
         PopupMenu(context, binding.btnSorting)
@@ -91,56 +91,7 @@ class FoldersFragment : Fragment() {
         setupLongClickListener()
         setupBottomSheet()
         setupMainPopUp()
-        setupSearchViewField()
-    }
-
-    private fun setupSearchViewField() {
-        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.main, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when (menuItem.itemId) {
-                    R.id.search -> {
-                        val onActionExpandListener: MenuItem.OnActionExpandListener = object : MenuItem.OnActionExpandListener {
-                            override fun onMenuItemActionExpand(item: MenuItem): Boolean { return true }
-                            override fun onMenuItemActionCollapse(item: MenuItem): Boolean { return true }
-                        }
-                        menuItem.setOnActionExpandListener(onActionExpandListener)
-                        val searchView = menuItem.actionView as SearchView
-                        searchView.queryHint = SEARCH
-
-                        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-                            override fun onQueryTextSubmit(query: String?): Boolean {
-                                if (query != null)
-                                    viewModel.searchInCurrentList(query)
-                                viewModel.searchedQueryList.observe(viewLifecycleOwner) {
-                                    foldersAdapter.submitList(it)
-                                }
-                                return true
-                            }
-                            override fun onQueryTextChange(newText: String?): Boolean {
-                                view?.let {
-                                    if (newText != null)
-                                        viewModel.searchInCurrentList(newText)
-                                    viewModel.searchedQueryList.observe(viewLifecycleOwner) {
-                                        foldersAdapter.submitList(it)
-                                    }
-                                }
-                                return true
-                            }
-                        })
-                        menuItem.expandActionView()
-                    }
-                    else -> {
-                        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-                        drawerLayout.openDrawer(GravityCompat.START)
-                    }
-                }
-                return true
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun setupBottomSheet() {
@@ -152,24 +103,20 @@ class FoldersFragment : Fragment() {
         bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    private fun init() {
-        with(binding) {
-            rcView.layoutManager = LinearLayoutManager(activity)
-            foldersAdapter = FileListAdapter(requireContext())
-            rcView.adapter = foldersAdapter
-            registerForContextMenu(btnSorting)
-        }
+    private fun init() = with(binding) {
+        rcView.layoutManager = LinearLayoutManager(activity)
+        foldersAdapter = FileListAdapter(requireContext())
+        rcView.adapter = foldersAdapter
+        registerForContextMenu(btnSorting)
     }
 
-    private fun showFolderList() {
-        with(viewModel) {
-            updateList(args.path)
-            currentPath.observe(viewLifecycleOwner) {
-                binding.tvPath.text = it
-            }
-            folderList.observe(viewLifecycleOwner) {
-                foldersAdapter.submitList(it)
-            }
+    private fun showFolderList() = with(viewModel) {
+        updateList(args.path)
+        currentPath.observe(viewLifecycleOwner) {
+            binding.tvPath.text = it
+        }
+        folderList.observe(viewLifecycleOwner) {
+            foldersAdapter.submitList(it)
         }
     }
 
@@ -257,6 +204,51 @@ class FoldersFragment : Fragment() {
             }
             show()
         }
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.main, menu)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.search -> {
+                val onActionExpandListener: MenuItem.OnActionExpandListener = object : MenuItem.OnActionExpandListener {
+                    override fun onMenuItemActionExpand(item: MenuItem): Boolean { return true }
+                    override fun onMenuItemActionCollapse(item: MenuItem): Boolean { return true }
+                }
+                menuItem.setOnActionExpandListener(onActionExpandListener)
+                val searchView = menuItem.actionView as SearchView
+                searchView.queryHint = SEARCH
+
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        if (query != null)
+                            viewModel.searchInCurrentList(query)
+                        viewModel.searchedQueryList.observe(viewLifecycleOwner) {
+                            foldersAdapter.submitList(it)
+                        }
+                        return true
+                    }
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        view?.let {
+                            if (newText != null)
+                                viewModel.searchInCurrentList(newText)
+                            viewModel.searchedQueryList.observe(viewLifecycleOwner) {
+                                foldersAdapter.submitList(it)
+                            }
+                        }
+                        return true
+                    }
+                })
+                menuItem.expandActionView()
+            }
+            else -> {
+                val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+                drawerLayout.openDrawer(GravityCompat.START)
+            }
+        }
+        return true
     }
 
 }

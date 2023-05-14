@@ -1,6 +1,6 @@
 <resources>
     <integer name="com_vk_sdk_AppId">51640299</integer>
-    <string name="app_name">Filemanager</string>
+    <string name="app_name">File manager</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -12,7 +12,7 @@
     <string name="menu_folders">Folders</string>
     <string name="menu_vkid">VK ID</string>
     <string name="authorization_using">Пссс, хочешь немного VK\'ида?</string>
-    <string name="vkid_state">Произошла авторизация...</string>
+    <string name="vkid_state">Произошла авторизация…</string>
     <string name="vk_id">Хочу</string>
     <string name="continue_without_authorization">Пока что обойдусь ;)</string>
     <string name="deleteText">Отмена</string>
@@ -20,7 +20,7 @@
     <string name="folder_inaccessible">"Содержимое этой папки не может быть отображено из-за ограничений Android"</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="back">вернуться</string>
-    <string name="timestamp_files">%1$s Files</string>
+    <string name="timestamp_files">6 Files</string>
     <string name="sortByFromLargestToSmallest">От большего к меньшему</string>
     <string name="uploadToVkDocs">Загрузить в VK Документы</string>
     <string name="sortByName">По имени</string>
@@ -36,5 +36,6 @@
     <string name="cancel">Отмена</string>
     <string name="accept">Разрешить</string>
     <string name="start_Text">Для корректной работы приложения разрешите доступ для управления всеми файлами на вашем устройстве</string>
-    <string name="wait">Секунду...</string>
+    <string name="wait">Секунду…</string>
+    <string name="nothing_to_show">с момента последнего запуска ни один файл не был изменен</string>
 </resources>

@@ -10,4 +10,7 @@ interface FileDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFile(fileModelDb: FileModelDb)
+
+    @Query("DELETE FROM filesHashes")
+    suspend fun clearRecentUpdatedFiles()
 }

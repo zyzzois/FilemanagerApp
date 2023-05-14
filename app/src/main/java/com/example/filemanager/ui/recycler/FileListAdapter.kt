@@ -10,11 +10,9 @@ import com.example.domain.entity.FileType
 import com.example.filemanager.R
 import com.example.filemanager.databinding.FileListItemBinding
 
-
 class FileListAdapter(private val context: Context): ListAdapter<FileEntity, FileItemViewHolder>(
     FileItemDiffCallback
 ) {
-
     var onFileItemLongClickListener: ((FileEntity) -> Unit)? = null
     var onFileItemClickListener: ((FileEntity) -> Unit)? = null
 
@@ -38,48 +36,58 @@ class FileListAdapter(private val context: Context): ListAdapter<FileEntity, Fil
         }
 
         with(binding) {
-
             when (fileItem.fileType) {
                 is FileType.FOLDER -> {
                     imageFileIcon.setImageResource(R.drawable.ic_folder)
-                    tvTimesTamp.text = "${fileItem.numOfFilesInFolder} Files"
-
+                    tvSize.text = "${fileItem.numOfFilesInFolder} Files"
+                    tvTimesTampString.text = fileItem.timestampString
                 }
                 is FileType.PDF -> {
-                    tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
+                    tvSize.text = Formatter.formatShortFileSize(context, fileItem.file.length())
                     imageFileIcon.setImageResource(R.drawable.ic_pdf)
+                    tvTimesTampString.text = fileItem.timestampString
                 }
                 is FileType.DOC -> {
-                    tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
+                    tvSize.text = Formatter.formatShortFileSize(context, fileItem.file.length())
                     imageFileIcon.setImageResource(R.drawable.ic_pdf)
+                    tvTimesTampString.text = fileItem.timestampString
                 }
                 is FileType.MP4 -> {
-                    tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
+                    tvSize.text = Formatter.formatShortFileSize(context, fileItem.file.length())
                     imageFileIcon.setImageResource(R.drawable.ic_mp4)
+                    tvTimesTampString.text = fileItem.timestampString
                 }
                 is FileType.MP3 -> {
-                    tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
+                    tvSize.text = Formatter.formatShortFileSize(context, fileItem.file.length())
                     imageFileIcon.setImageResource(R.drawable.ic_mp3)
+                    tvTimesTampString.text = fileItem.timestampString
                 }
                 is FileType.JPEG -> {
-                    tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
+                    tvSize.text = Formatter.formatShortFileSize(context, fileItem.file.length())
                     imageFileIcon.setImageResource(R.drawable.ic_image)
+                    tvTimesTampString.text = fileItem.timestampString
                 }
                 is FileType.PNG -> {
-                    tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
+                    tvSize.text = Formatter.formatShortFileSize(context, fileItem.file.length())
                     imageFileIcon.setImageResource(R.drawable.ic_image)
+                    tvTimesTampString.text = fileItem.timestampString
                 }
                 is FileType.JPG -> {
-                    tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
+                    tvSize.text = Formatter.formatShortFileSize(context, fileItem.file.length())
                     imageFileIcon.setImageResource(R.drawable.ic_image)
+                    tvTimesTampString.text = fileItem.timestampString
                 }
                 is FileType.ZIP -> {
-                    tvTimesTamp.text = Formatter.formatShortFileSize(context, fileItem.file.length())
+                    tvSize.text = Formatter.formatShortFileSize(context, fileItem.file.length())
                     imageFileIcon.setImageResource(R.drawable.ic_zip)
+                    tvTimesTampString.text = fileItem.timestampString
                 }
-                else -> {
-                    imageFileIcon.setImageResource(R.drawable.ic_folder)
+                is FileType.APK -> {
+                    tvSize.text = Formatter.formatShortFileSize(context, fileItem.file.length())
+                    imageFileIcon.setImageResource(R.drawable.ic_apk_file)
+                    tvTimesTampString.text = fileItem.timestampString
                 }
+                else -> imageFileIcon.setImageResource(R.drawable.ic_folder)
             }
             tvFileName.text = fileItem.filename
         }

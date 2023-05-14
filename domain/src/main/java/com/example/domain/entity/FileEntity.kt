@@ -11,7 +11,8 @@ data class FileEntity(
     var folderLength: String = UNDEFINED_LENGTH,
     var isFolder: Boolean = false,
     var numOfFilesInFolder: Int = 0,
-    var id: Int = UNDEFINED_ID
+    var id: Int = UNDEFINED_ID,
+    var timestampString: String = ""
 ) {
     companion object {
         const val UNDEFINED_LENGTH = ""

@@ -2,20 +2,34 @@ package com.example.filemanager.ui.screens
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.GravityCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.entity.FileGroup
+import com.example.filemanager.R
 import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.databinding.FragmentHomeBinding
 import com.example.filemanager.ui.recycler.FileListAdapter
 import com.example.filemanager.ui.vm.HomeViewModel
 import com.example.filemanager.ui.vm.ViewModelFactory
+import com.example.filemanager.utils.Constants
 import com.example.filemanager.utils.Constants.HOME_FRAGMENT_BINDING_IS_NULL
+import com.example.filemanager.utils.showToast
 import javax.inject.Inject
 
 class HomeFragment : Fragment() {
@@ -61,7 +75,10 @@ class HomeFragment : Fragment() {
     private fun showRecentUpdatedFileList() {
         viewModel.findLastModifiedFileList()
         viewModel.lastModifiedFileList.observe(viewLifecycleOwner) {
-            recentUpdatedListAdapter.submitList(it)
+            if (it != null) {
+                if (it.isEmpty()) binding.textViewNothingToShow.visibility = View.VISIBLE
+                else recentUpdatedListAdapter.submitList(it)
+            }
         }
     }
 
