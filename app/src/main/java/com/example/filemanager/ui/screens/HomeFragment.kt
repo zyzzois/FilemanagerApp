@@ -91,15 +91,10 @@ class HomeFragment : Fragment() {
             bottomSheetBackGround.visibility = View.VISIBLE
 
             bottomSheetBackGround.setOnClickListener {
-                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBackGround.visibility = View.GONE
+                hideBottomSheetMenus()
             }
-
             bottomMenuRename.buttonDeleteOnBottomMenu.setOnClickListener {
-                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBackGround.visibility = View.GONE
+                hideBottomSheetMenus()
             }
 
             bottomMenuActions.buttonDelete.setOnClickListener {
@@ -133,6 +128,12 @@ class HomeFragment : Fragment() {
 
             }
         }
+    }
+
+    private fun hideBottomSheetMenus() = with(binding) {
+        bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBackGround.visibility = View.GONE
     }
 
     private fun setupClickListener() {

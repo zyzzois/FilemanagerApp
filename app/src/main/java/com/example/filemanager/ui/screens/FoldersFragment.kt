@@ -141,15 +141,11 @@ class FoldersFragment : Fragment(), MenuProvider {
             bottomSheetBackGround.visibility = View.VISIBLE
 
             bottomSheetBackGround.setOnClickListener {
-                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBackGround.visibility = View.GONE
+                hideBottomSheetMenus()
             }
 
             bottomMenuRename.buttonDeleteOnBottomMenu.setOnClickListener {
-                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBackGround.visibility = View.GONE
+                hideBottomSheetMenus()
             }
 
             bottomMenuActions.buttonDelete.setOnClickListener {
@@ -183,6 +179,12 @@ class FoldersFragment : Fragment(), MenuProvider {
 
             }
         }
+    }
+
+    private fun hideBottomSheetMenus() = with(binding) {
+        bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBackGround.visibility = View.GONE
     }
 
     private fun setupMainPopUp() = with(mainPopupMenu) {

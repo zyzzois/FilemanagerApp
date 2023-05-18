@@ -3,87 +3,58 @@
     android:id="@+id/bottomActions"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
     android:weightSum="3"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/bottom_sheet_behavior"
     android:background="@drawable/custom_bottom_menu_rounded_back"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:baselineAligned="false">
 
-    <LinearLayout
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonShare"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:orientation="vertical"
+        android:text="@string/share_file"
+        android:fontFamily="@font/vk_sans_display_medium"
+        app:iconGravity="top"
+        android:textColor="@color/black"
+        app:iconTint="@color/black"
+        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
+        android:textSize="11sp"
+        android:layout_weight="1"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
         android:layout_height="wrap_content"
-        android:focusable="true">
+        app:icon="@drawable/ic_share" />
 
-        <ImageButton
-            android:layout_gravity="center"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/ic_share" />
-
-        <TextView
-            android:text="@string/share_file"
-            android:layout_marginTop="4dp"
-            android:textSize="12sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/vk_sans_display_regular"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonDelete"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:orientation="vertical"
         android:layout_width="wrap_content"
+        android:textSize="11sp"
+        android:textColor="@color/black"
+        app:iconTint="@color/black"
+        app:iconGravity="top"
+        android:fontFamily="@font/vk_sans_display_medium"
+        android:layout_weight="1"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
         android:layout_height="wrap_content"
-        android:focusable="true">
-        <ImageButton
-            android:layout_gravity="center"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/ic_delete" />
-        <TextView
-            android:text="@string/delete_item"
-            android:layout_marginTop="4dp"
-            android:textSize="12sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/vk_sans_display_regular"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:text="@string/delete_item"
+        android:layout_gravity="center_horizontal"
+        app:icon="@drawable/ic_delete" />
 
-    <LinearLayout
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonRename"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/rename"
+        android:textColor="@color/black"
+        app:iconTint="@color/black"
+        android:textSize="11sp"
+        android:fontFamily="@font/vk_sans_display_medium"
+        app:iconGravity="top"
         android:layout_weight="1"
-        android:clickable="true"
-        android:orientation="vertical"
         android:layout_width="wrap_content"
+        android:focusableInTouchMode="false"
         android:layout_height="wrap_content"
-        android:focusable="true">
-        <ImageButton
-            android:layout_gravity="center"
-            android:layout_width="30dp"
-            android:focusableInTouchMode="false"
-            android:layout_height="30dp"
-            android:background="@drawable/ic_edit" />
-        <TextView
-            android:text="@string/rename"
-            android:layout_gravity="center"
-            android:layout_marginTop="4dp"
-            android:textSize="12sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/vk_sans_display_regular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        app:icon="@drawable/ic_edit" />
+
 
 </LinearLayout>

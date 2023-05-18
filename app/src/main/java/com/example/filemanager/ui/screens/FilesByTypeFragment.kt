@@ -130,15 +130,11 @@ class FilesByTypeFragment : Fragment(), MenuProvider {
             bottomSheetBackGround.visibility = View.VISIBLE
 
             bottomSheetBackGround.setOnClickListener {
-                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBackGround.visibility = View.GONE
+                hideBottomSheetMenus()
             }
 
             bottomMenuRename.buttonDeleteOnBottomMenu.setOnClickListener {
-                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
-                bottomSheetBackGround.visibility = View.GONE
+                hideBottomSheetMenus()
             }
 
             bottomMenuActions.buttonDelete.setOnClickListener {
@@ -171,6 +167,12 @@ class FilesByTypeFragment : Fragment(), MenuProvider {
                 FileOpener().shareFile(requireContext(), selectedFile.file)
             }
         }
+    }
+
+    private fun hideBottomSheetMenus() = with(binding) {
+        bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBackGround.visibility = View.GONE
     }
 
     private fun initRecyclerView() {
