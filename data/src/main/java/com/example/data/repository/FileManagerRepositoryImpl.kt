@@ -1,7 +1,10 @@
 package com.example.data.repository
 
 import android.os.Environment
-import com.example.data.database.FileDao
+import android.util.Log
+import com.example.data.database.FileModelDb
+import com.example.data.database.FilesHashesDao
+import com.example.data.database.RecentUpdatedFilesDao
 import com.example.data.mapper.FileToEntityMapper
 import com.example.data.utils.extensionIs
 import com.example.domain.entity.FileEntity
@@ -14,7 +17,8 @@ import javax.inject.Inject
 
 class FileManagerRepositoryImpl @Inject constructor(
     private val mapper: FileToEntityMapper,
-    private val fileDao: FileDao
+    private val filesHashesDao: FilesHashesDao,
+    private val recentUpdatedFilesDao: RecentUpdatedFilesDao
 ): FileManagerRepository {
 
     override suspend fun getFolderList(path: String): List<FileEntity> {
@@ -69,26 +73,94 @@ class FileManagerRepositoryImpl @Inject constructor(
             fileToDelete.delete()
     }
 
+//    старый метод
+//    override suspend fun getRecentUpdatedFileList(): List<FileEntity> {
+//        return withContext(Dispatchers.IO) {
+//            val recentUpdatedFiles = mutableListOf<FileEntity>()
+//            val filesFromDb = recentUpdatedFilesDao.getRecentUpdatedFileList()
+//            filesFromDb.forEach {
+//                recentUpdatedFiles.add(mapper.mapRecentUpdatedFileModelDbToEntity(it))
+//            }
+//            recentUpdatedFiles
+//        }
+//    }
+
     override suspend fun getRecentUpdatedFileList(): List<FileEntity> {
         return withContext(Dispatchers.IO) {
             val recentUpdatedFiles = mutableListOf<FileEntity>()
-            val filesFromDb = fileDao.getRecentUpdatedFileList()
-            for (file in filesFromDb)
-                if (File(file.path).hashCode() != file.fileHashCode)
-                    recentUpdatedFiles.add(mapper.mapDBModelToEntity(file))
+            val defaultPath = Environment.getExternalStorageDirectory()
+            val files = getAllFiles(defaultPath)
+            Log.d("RECENT", files.toString())
+
+            files.forEach {
+                if (it.isFile && extension.contains(it.extension) && it.canRead()) {
+                    recentUpdatedFiles.add(mapper.mapFileToFileEntity(it))
+                }
+            }
+            recentUpdatedFiles.sortByDescending {
+                it.file.lastModified()
+            }
+            Log.d("RECENT", recentUpdatedFiles.toString())
+
             recentUpdatedFiles
         }
     }
 
-    override suspend fun uploadFilesHashesToDatabase() {
-        val files = getAllFiles(Environment.getExternalStorageDirectory())
+    override suspend fun uploadRecentUpdatesFilesToDatabase(lastRunTime: Long) = withContext(Dispatchers.IO) {
+        val recentUpdatedFiles = mutableListOf<FileEntity>()
+        val defaultPath = Environment.getExternalStorageDirectory()
+        val files = getAllFiles(defaultPath)
+
+
         files.forEach {
-            fileDao.addFile(mapper.mapEntityToDbModel(mapper.mapFileToFileEntity(it)))
+            if (it.isFile && extension.contains(it.extension) && it.canRead()) {
+                recentUpdatedFiles.add(mapper.mapFileToFileEntity(it))
+            }
         }
+        recentUpdatedFiles.sortByDescending {
+            it.file.lastModified()
+        }
+        //while ()
+    }
+
+
+//    старый метод
+//    override suspend fun uploadRecentUpdatesFilesToDatabase(lastRunTime: Long) = withContext(Dispatchers.IO) {
+//        val recentUpdatedFiles = mutableListOf<RecentUpdatedFileModelDb>()
+//        val oldFiles = filesHashesDao.getOldFiles()
+//        for (file in oldFiles) {
+//            val currentFile = File(file.path)
+//            if (currentFile.exists()) {
+//                if (currentFile.lastModified() > lastRunTime) {
+//                    val currentFileHashCode = mapper.getFileHashCode(currentFile)
+//                    if (currentFileHashCode != file.fileHashCode)
+//                        recentUpdatedFiles.add(
+//                            mapper.mapFileModelDbToRecentUpdatedFileModelDb(file)
+//                        )
+//                }
+//            }
+//        }
+//        recentUpdatedFilesDao.addFiles(recentUpdatedFiles)
+//    }
+
+    override suspend fun uploadFilesHashesToDatabase() = withContext(Dispatchers.IO) {
+        filesHashesDao.clearOldFilesTable()
+        Log.d("FileManagerRepositoryImpl", "Зашли в метод uploadFilesHashesToDatabase")
+        val fileList = mutableListOf<FileModelDb>()
+        val rootFile = Environment.getExternalStorageDirectory()
+        val files = getAllFiles(rootFile)
+        Log.d("FileManagerRepositoryImpl", "Получили все файлы")
+        files.forEach {
+            if (it.isFile && it.canRead() && extension.contains(it.extension)) {
+                fileList.add(mapper.mapEntityToDbModel(mapper.mapFileToFileEntity(it)))
+            }
+        }
+        Log.d("FileManagerRepositoryImpl", "Получили список всех хешкодов")
+        filesHashesDao.addFiles(fileList)
     }
 
     override suspend fun clearRecentUpdatedFileList() {
-        fileDao.clearRecentUpdatedFiles()
+        recentUpdatedFilesDao.clearRecentUpdatedFiles()
     }
 
     private suspend fun getAllFiles(dir: File): List<File> {
@@ -151,25 +223,21 @@ class FileManagerRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun shareFile(file: FileEntity) {
-        TODO("Not yet implemented")
-    }
-
     companion object {
         private const val DEFAULT_VALUE = "DEFAULT_VALUE"
         internal val extension = listOf(
-            ".jpeg",
-            ".jpg",
-            ".png",
-            ".mp3",
-            ".wav",
-            ".mp4",
-            ".pdf",
-            ".doc",
-            ".apk",
-            ".zip",
-            ".xlsx",
-            ".ppt"
+            "jpeg",
+            "jpg",
+            "png",
+            "mp3",
+            "wav",
+            "mp4",
+            "pdf",
+            "doc",
+            "apk",
+            "zip",
+            "xlsx",
+            "ppt"
         )
     }
 }

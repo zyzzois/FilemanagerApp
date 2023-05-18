@@ -1,27 +1,26 @@
 package com.example.filemanager.ui.vm
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.usecase.ClearRecentUpdatedFileListUseCase
 import com.example.domain.usecase.UploadFilesHashesToDatabaseUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class StartViewModel @Inject constructor(
-    private val uploadFilesHashesToDatabaseUseCase: UploadFilesHashesToDatabaseUseCase,
-    private val clearRecentUpdatedFileListUseCase: ClearRecentUpdatedFileListUseCase
+    private val uploadFilesHashesToDatabaseUseCase: UploadFilesHashesToDatabaseUseCase
 ): ViewModel() {
 
-    fun uploadFilesHashesToDatabase() {
+    private val _lastRunTime = MutableLiveData<Long>()
+
+    fun uploadRecentUpdatedFilesToDatabase() {
         viewModelScope.launch {
             uploadFilesHashesToDatabaseUseCase()
         }
     }
 
-    fun clearDatabase() {
-        viewModelScope.launch() {
-            clearRecentUpdatedFileListUseCase()
-        }
+    fun setLastRunTime(lastRunTime: Long) {
+        _lastRunTime.value = lastRunTime
     }
 
 }

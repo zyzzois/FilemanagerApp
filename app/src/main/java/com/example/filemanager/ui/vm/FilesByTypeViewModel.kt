@@ -21,8 +21,6 @@ class FilesByTypeViewModel @Inject constructor(
         get() = _fileList
 
     private val _currentPath = MutableLiveData<String>()
-    val currentPath: LiveData<String>
-        get() = _currentPath
 
     fun showFilesInSelectedGroup(fileGroup: FileGroup) {
         viewModelScope.launch {

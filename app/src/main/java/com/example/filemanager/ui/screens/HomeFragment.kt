@@ -1,22 +1,13 @@
 package com.example.filemanager.ui.screens
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.appcompat.widget.SearchView
-import androidx.core.view.GravityCompat
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
-import androidx.drawerlayout.widget.DrawerLayout
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,9 +18,9 @@ import com.example.filemanager.databinding.FragmentHomeBinding
 import com.example.filemanager.ui.recycler.FileListAdapter
 import com.example.filemanager.ui.vm.HomeViewModel
 import com.example.filemanager.ui.vm.ViewModelFactory
-import com.example.filemanager.utils.Constants
 import com.example.filemanager.utils.Constants.HOME_FRAGMENT_BINDING_IS_NULL
-import com.example.filemanager.utils.showToast
+import com.example.filemanager.utils.FileOpener
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import javax.inject.Inject
 
 class HomeFragment : Fragment() {
@@ -51,6 +42,9 @@ class HomeFragment : Fragment() {
 
     private lateinit var recentUpdatedListAdapter: FileListAdapter
 
+    private lateinit var bottomSheetBehaviorActions: BottomSheetBehavior<LinearLayout>
+    private lateinit var bottomSheetBehaviorRename: BottomSheetBehavior<LinearLayout>
+
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
@@ -67,17 +61,80 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setTextViewVisible()
         initButtons()
         init()
+        setupBottomSheet()
         showRecentUpdatedFileList()
+        setupClickListener()
+
+        setupLongClickListener()
+    }
+
+    private fun setTextViewVisible() {
+        binding.textViewWait.visibility = View.VISIBLE
+    }
+
+    private fun setupBottomSheet() {
+        bottomSheetBehaviorActions = BottomSheetBehavior.from(binding.bottomMenuActions.bottomActions)
+        bottomSheetBehaviorRename = BottomSheetBehavior.from(binding.bottomMenuRename.bottomMenu)
+        bottomSheetBehaviorActions.peekHeight = 0
+        bottomSheetBehaviorRename.peekHeight = 0
+        bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun setupLongClickListener() = with(binding) {
+        recentUpdatedListAdapter.onFileItemLongClickListener = {
+            val selectedFile = it
+            bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetBackGround.visibility = View.VISIBLE
+
+            bottomMenuActions.buttonDelete.setOnClickListener {
+                val builder = context?.let { it1 -> AlertDialog.Builder(it1) }
+                builder?.setTitle(requireContext().getString(R.string.question))
+                builder?.setPositiveButton(requireContext().getString(R.string.yes)) { _, _ ->
+                    viewModel.deleteFile(selectedFile)
+                    bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+                    bottomSheetBackGround.visibility = View.GONE
+                }
+                builder?.setNegativeButton(requireContext().getString(R.string.cancel)) { _, _ ->
+                    bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+                    bottomSheetBackGround.visibility = View.GONE
+                }
+                val dialog = builder?.create()
+                dialog?.show()
+            }
+
+            bottomMenuActions.buttonRename.setOnClickListener {
+                bottomSheetBackGround.visibility = View.GONE
+                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+                bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_EXPANDED
+                bottomSheetBackGround.visibility = View.VISIBLE
+                bottomMenuRename.inputFileName.setText(selectedFile.filename)
+
+            }
+            bottomMenuActions.buttonShare.setOnClickListener {
+                bottomSheetBackGround.visibility = View.GONE
+                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+                FileOpener().shareFile(requireContext(), selectedFile.file)
+
+            }
+        }
+    }
+
+    private fun setupClickListener() {
+        recentUpdatedListAdapter.onFileItemClickListener = {
+            FileOpener().openFile(requireContext(), it.file)
+        }
     }
 
     private fun showRecentUpdatedFileList() {
         viewModel.findLastModifiedFileList()
         viewModel.lastModifiedFileList.observe(viewLifecycleOwner) {
             if (it != null) {
-                if (it.isEmpty()) binding.textViewNothingToShow.visibility = View.VISIBLE
-                else recentUpdatedListAdapter.submitList(it)
+                binding.textViewWait.visibility = View.GONE
+                recentUpdatedListAdapter.submitList(it)
             }
         }
     }
@@ -143,7 +200,6 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

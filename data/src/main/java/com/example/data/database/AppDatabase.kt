@@ -5,10 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [FileModelDb::class], version = 1, exportSchema = false)
+@Database(entities = [FileModelDb::class, RecentUpdatedFileModelDb::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun notesDao(): FileDao
+    abstract fun filesHashesDao(): FilesHashesDao
+    abstract fun recentUpdatedFiledFao(): RecentUpdatedFilesDao
 
     companion object {
         private var db: AppDatabase? = null

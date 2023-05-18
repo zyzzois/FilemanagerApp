@@ -1,9 +1,9 @@
 <resources>
     <integer name="com_vk_sdk_AppId">51640299</integer>
-    <string name="app_name">File manager</string>
+    <string name="app_name">Filemanager</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_title">Filemanager</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -38,4 +38,5 @@
     <string name="start_Text">Для корректной работы приложения разрешите доступ для управления всеми файлами на вашем устройстве</string>
     <string name="wait">Секунду…</string>
     <string name="nothing_to_show">с момента последнего запуска ни один файл не был изменен</string>
+    <string name="apk">APK</string>
 </resources>

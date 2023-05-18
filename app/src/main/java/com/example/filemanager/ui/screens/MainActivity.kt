@@ -4,13 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
-import androidx.core.view.MenuHost
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -22,8 +16,6 @@ import com.example.filemanager.app.FileManagerApp
 import com.example.filemanager.databinding.ActivityMainBinding
 import com.example.filemanager.ui.vm.StartViewModel
 import com.example.filemanager.ui.vm.ViewModelFactory
-import com.example.filemanager.utils.Constants.SEARCH
-import com.example.filemanager.utils.showToast
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -50,12 +42,17 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
+    private val sharedPreferences by lazy {
+        getSharedPreferences(TIME_TABLE, Context.MODE_PRIVATE)
+    }
+    private val sharedPreferencesEditor by lazy { sharedPreferences.edit() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         super.onCreate(savedInstanceState)
+        parseLastStartTime()
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
-        uploadFilesHashesToDatabase()
         val drawerLayout = binding.drawerLayout
         val navView = binding.navView
 
@@ -67,9 +64,16 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
-    private fun uploadFilesHashesToDatabase() {
-        viewModel.clearDatabase()
+    private fun parseLastStartTime() {
+        val currentTime = System.currentTimeMillis()
+        val lastRunTime = sharedPreferences.getLong(LAST_RUN_TIME, currentTime)
+        viewModel.setLastRunTime(lastRunTime)
+        viewModel.uploadRecentUpdatedFilesToDatabase()
+        sharedPreferencesEditor.putLong(LAST_RUN_TIME, System.currentTimeMillis())
+        sharedPreferencesEditor.apply()
     }
+
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -85,14 +89,10 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    override fun onDestroy() {
-        Log.d("ZOIS", "onDestroy")
-        super.onDestroy()
-        viewModel.uploadFilesHashesToDatabase()
-    }
-
     companion object {
         const val REQUEST_CODE = 200
+        private const val TIME_TABLE = "TIME_TABLE"
+        private const val LAST_RUN_TIME = "LAST_RUN_TIME"
         fun newIntentOpenMainActivity(context: Context) = Intent(context, MainActivity::class.java)
     }
 }

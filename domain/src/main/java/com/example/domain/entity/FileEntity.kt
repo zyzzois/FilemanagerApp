@@ -9,7 +9,6 @@ data class FileEntity(
     val file: File,
     val fileSize: Long,
     var folderLength: String = UNDEFINED_LENGTH,
-    var isFolder: Boolean = false,
     var numOfFilesInFolder: Int = 0,
     var id: Int = UNDEFINED_ID,
     var timestampString: String = ""
