@@ -140,6 +140,18 @@ class FoldersFragment : Fragment(), MenuProvider {
             bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_EXPANDED
             bottomSheetBackGround.visibility = View.VISIBLE
 
+            bottomSheetBackGround.setOnClickListener {
+                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+                bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
+                bottomSheetBackGround.visibility = View.GONE
+            }
+
+            bottomMenuRename.buttonDeleteOnBottomMenu.setOnClickListener {
+                bottomSheetBehaviorActions.state = BottomSheetBehavior.STATE_COLLAPSED
+                bottomSheetBehaviorRename.state = BottomSheetBehavior.STATE_COLLAPSED
+                bottomSheetBackGround.visibility = View.GONE
+            }
+
             bottomMenuActions.buttonDelete.setOnClickListener {
                 val builder = context?.let { it1 -> AlertDialog.Builder(it1) }
                 builder?.setTitle(requireContext().getString(R.string.question))
